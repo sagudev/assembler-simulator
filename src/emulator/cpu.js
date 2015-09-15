@@ -19,7 +19,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
             var instr = [memory.load(self.ip), memory.load(self.ip + 1)];
             var opcode = instr[0] >> 4;
-            log('opcode: ' + opcode);
             var regDest = instr[0] & 0x0F, regSource1 = instr[1] >> 4, regSource2 = instr[1] & 0x0F;
             var mem = instr[1], num = instr[1];
             self.ip = self.ip + 2;
