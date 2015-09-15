@@ -33,6 +33,46 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 }
             };
 
+            var findHighestBit = function(bits, max) {
+                var i;
+                for (i = max; i >= 0; i--) {
+                    if ((bits >> i) !== 0)
+                        break;
+                }
+                return i;
+            };
+
+            var floatingAdd = function(a, b) {
+                var a_sign = (a & 0x80) >> 7, a_expo = ((a & 0x70) >> 4), a_mant = a & 0x0F;
+                var b_sign = (b & 0x80) >> 7, b_expo = ((b & 0x70) >> 4), b_mant = b & 0x0F;
+                var a_fix = (a_mant << a_expo), b_fix = (b_mant << b_expo);
+                var result_sign, result_fix;
+                if (a_sign == b_sign) {
+                    result_sign = a_sign;
+                    result_fix = a_fix + b_fix;
+                } else {
+                    if (a_fix > b_fix) {
+                        result_sign = a_sign;
+                        result_fix = a_fix - b_fix;
+                    } else if (a_fix < b_fix) {
+                        result_sign = b_sign;
+                        result_fix = b_fix - a_fix;
+                    } else {
+                        result_fix = 0;
+                        result_sign = 0;
+                    }
+                }
+                var result_expo = findHighestBit(result_fix, 16) - 3;
+                if (result_expo > 7) {
+                    result_expo = 7;
+                } else if (result_expo < 0) {
+                    result_expo = 0;
+                }
+                var result_mant = (result_fix >> result_expo) & 0xF;
+                var result = (result_sign << 7) | (result_expo << 4) | result_mant;
+                return result;
+            };
+
             self.updateTimer = false;
             self.status = '';
 
@@ -58,7 +98,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 writeReg(regDest, (readReg(regSource1) + readReg(regSource2)) & 0xFF);
                 break;
             case opcodes.ADD_FLOAT:
-                // TODO
+                writeReg(regDest, floatingAdd(readReg(regSource1), readReg(regSource2)));
                 break;
             case opcodes.OR:
                 writeReg(regDest, readReg(regSource1) | readReg(regSource2));
