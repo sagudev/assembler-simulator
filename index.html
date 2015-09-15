@@ -35,7 +35,7 @@
                             <textarea id="sourceCode"
                                       class="form-control source-code"
                                       style="margin-bottom:5px;"
-                                      rows="35"
+                                      rows="30"
                                       tab-support
                                       select-line
                                       ng-model="code"></textarea>
@@ -52,11 +52,10 @@
                         <h4 class="panel-title">CPU & Memory</h4>
                     </div>
                     <div class="panel-body">
-                        <p class="text-muted">Registers</p>
+                        <p class="text-muted">General Registers</p>
                         <table class="table table-condensed table-striped">
                             <thead>
                                 <tr>
-                                    <th style="text-align:center">IP</th>
                                     <th style="text-align:center">0</th>
                                     <th style="text-align:center">1</th>
                                     <th style="text-align:center">2</th>
@@ -77,7 +76,6 @@
                             </thead>
                             <tbody>
                                 <tr style="text-align:center;" class="source-code">
-                                    <td><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayA && 'marker marker-a'"><small>{{ cpu.gpr[0] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayB && 'marker marker-b'"><small>{{ cpu.gpr[1] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayC && 'marker marker-c'"><small>{{ cpu.gpr[2] | number:displayHex }}</small></div></td>
@@ -95,7 +93,20 @@
                                     <td><div style="margin:auto;" ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[14] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[15] | number:displayHex }}</small></div></td>
                                 </tr>
-                            </tbody>
+			    </tbody>
+			</table>
+                        <p class="text-muted">Other Registers</p>
+			<table class="table table-condensed table-striped">
+			    <tbody>
+			      <tr>
+				<td style="text-align:left">IP <font color="E81F1F">{{ cpu.status }}</font> </td>
+                                <td style="text-align:center;" class="source-code"><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex }}</small></div></td>
+			      </tr>
+			      <tr>
+				<td style="text-align:left">Timer Countdown</td>
+                                <td style="text-align:center;" class="source-code"><div style="margin:auto;"><small>{{ cpu.countdown | number:displayHex }}</small></div></td>
+			      </tr>
+			    </tbody>
                         </table>
                         <p class="text-muted">RAM</p>
                         <div style="width:29em;" class="source-code">
