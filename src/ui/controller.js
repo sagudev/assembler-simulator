@@ -1,4 +1,4 @@
-app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', function ($document, $scope, $timeout, cpu, memory, assembler) {
+app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', 'uploader', function ($document, $scope, $timeout, cpu, memory, assembler, uploader) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
