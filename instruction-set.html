@@ -48,7 +48,7 @@ Address using a label: label
         <h4>MOVE S, R</h4>
         <p> MOVE the bit pattern found in register R to register S.</p>
 <pre>
-MOV reg, reg
+MOVE reg, reg
 </pre>
         <h4>DB - Variable</h4>
         <p>Defines a variable. A variable can either be a single number, character or a string.</p>
@@ -73,7 +73,7 @@ XOR regR, regS, regT ; R=S ^ T
 <pre>
 ROT regR, numX  ; regR=regR rotate-right numX times
 </pre>
-        <h4>JUMP -  jump if euqal</h4>
+        <h4>JUMP -  jump if equal</h4>
         <p>JUMP to the instruction located in the memory cell at address XY if the bit pattern in register R is equal to the bit
             pattern in register 0. Otherwise, continue with the normal sequence of execution. (The jump is implemented by
             copying XY into the program counter during the execute phase.)
@@ -95,27 +95,27 @@ JUMPL regR, numXY
 <pre>
 HALT
 </pre>
-        <h4>LOAD </h4>
+        <h4>LOADM (Load from Memory) </h4>
         <p>LOAD the register R with the bit pattern found in the memory cell whose address is XY. </p>
 <pre>
-LOAD regR, numXY
+LOADM regR, numXY
 </pre>
-        <h4>LOADI </h4>
-        <p>LOADI the register R with the bit pattern XY.  </p>
+        <h4>LOADB (Load with Bit Pattern) </h4>
+        <p>LOAD the register R with the bit pattern XY.  </p>
 <pre>
-LOADI regR, numXY
+LOADB regR, numXY
 </pre>
-        <h4>LOADP </h4>
+        <h4>LOADP (Load via Pointer) </h4>
         <p>LOAD the register R with the contents of the memory cell whose address is found in register S.</p>
 <pre>
 LOADP regR, regS
 </pre>
-        <h4>STORE </h4>
+        <h4>STOREM (Store to Memory) </h4>
         <p>STORE the bit pattern found in register R in the memory cell whose address is XY. </p>
 <pre>
-STORE regR, numXY
+STOREM regR, numXY
 </pre>
-        <h4>STOREP </h4>
+        <h4>STOREP (Store via Pointer) </h4>
         <p>STORE the contents of register R in the memory cell whose address is found in register S. </p>
 <pre>
 STOREP regR, regS
