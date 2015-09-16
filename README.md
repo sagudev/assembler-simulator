@@ -1,5 +1,5 @@
-# Simple 8-bit V8-CPU Assembler Simulator
-A simulator which provides a simplified assembler syntax and is simulating a simple 8-bit RISC cpu. Press Help inside the simulator to see an overview about the supported instructions.
+# Simple 8-bit V8-CPU Simulator with Assembler 
+This toolset is used for labs& exercise on undergraduate CS course "An overview of Computer Science". The simulator which provides a simplified assembler syntax and is simulating a simple 8-bit RISC cpu. Press Help inside the simulator to see an overview about the supported instructions, which is based on Appendix C contents in <a href="http://www.amazon.com/Computer-Science-Overview-12th-Edition/dp/0133760065" target="_blank">Computer Science: An Overview</a> textbook.
 
 ####<a href="http://166.111.132.191:8080/" target="_blank">TRY IT ONLINE</a>
 
