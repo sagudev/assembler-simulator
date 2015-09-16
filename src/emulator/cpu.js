@@ -80,6 +80,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             var opcode = instr[0] >> 4;
             var regDest = instr[0] & 0x0F, regSource1 = instr[1] >> 4, regSource2 = instr[1] & 0x0F;
             var mem = instr[1], num = instr[1];
+            self.ir = (instr[0] << 8 | instr[1]).toString(16);
             self.ip = (self.ip + 2) & 0xFF;
             switch(opcode) {
             case opcodes.LOAD_FROM_MEMORY:
@@ -151,6 +152,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
             self.gpr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             self.ip = 0;
+            self.ir = '0000';
             self.status = '';
 
             self.countdown = 0;

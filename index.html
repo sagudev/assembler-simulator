@@ -103,11 +103,15 @@
 			<table class="table table-condensed table-striped">
 			    <tbody>
 			      <tr>
-				<td style="text-align:left">IP <font color="E81F1F">{{ cpu.status }}</font> </td>
+				<td style="text-align:left">Program counter <font color="E81F1F">{{ cpu.status }}</font> </td>
                                 <td style="text-align:center;" class="source-code"><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex }}</small></div></td>
 			      </tr>
 			      <tr>
-				<td style="text-align:left">Timer Countdown</td>
+				<td style="text-align:left">Instruction register</td>
+                                <td style="text-align:center;" class="source-code"><div style="margin:auto;"><small>{{ cpu.ir | number:displayHex }}</small></div></td>
+			      </tr>
+			      <tr>
+				<td style="text-align:left">Timer countdown</td>
                                 <td style="text-align:center;" class="source-code"><div style="margin:auto;"><small>{{ cpu.countdown | number:displayHex }}</small></div></td>
 			      </tr>
 			    </tbody>
