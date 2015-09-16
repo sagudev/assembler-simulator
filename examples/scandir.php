@@ -8,7 +8,9 @@
   while ($file = @readdir($handle)) {
     if (($tmp = strlen($file) - 4) >= 0 && strpos($file, ".txt", $tmp) !== FALSE) {
       $comment = substr(fgets(fopen($file, 'r')), 2);
-      array_push($files, $file . '|' . $comment);
+      if (strpos($comment, 'TODO') === FALSE) {
+        array_push($files, $file . '|' . $comment);
+      }
     }
   }
   @closedir($handle);
