@@ -38,15 +38,6 @@ module.exports = function(grunt) {
             files: ['<%= jshint.files %>'],
             tasks: ['jshint', 'concat']
         },
-        connect: {
-            server: {
-                options: {
-                    port: 8082,
-                    base: './',
-                    keepalive: true
-                }
-            }
-        },
         php: {
             dist: {
                 options: {
@@ -61,7 +52,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('default', ['jshint', 'concat', 'uglify']);

@@ -1,4 +1,4 @@
-# Simple 8-bit V8-CPU Simulator with Assembler/C-subset Compiler 
+# Simple 8-bit V8-CPU Simulator with Assembler/C-subset Compiler
 V8-CPU simulator is used for labs& exercises on first-year(freshman) undergraduate CS course "An Overview of Computer Science" in Dept. of CS in Tsinghua Univ. This simulator provides a simplified assembler/C syntax and is simulating a simple 8-bit RISC cpu. Press Help inside the simulator to see an overview about the supported instructions, which is based on Appendix C contents in <a href="http://www.amazon.com/Computer-Science-Overview-12th-Edition/dp/0133760065" target="_blank">Computer Science: An Overview</a> textbook.
 
 ####<a href="http://166.111.132.191:8080/" target="_blank">TRY IT ONLINE</a>
@@ -12,7 +12,7 @@ V8-CPU simulator is used for labs& exercises on first-year(freshman) undergradua
 
 ### How to build
 Make sure you have <a href="http://www.gruntjs.com/" target="_blank">Grunt</a> installed to compile the `asmsimulator.js` script.
-Run `grunt` to build the project.
+Run `npm install && grunt` to build the project and `grunt http` to run.
 
 ### Background
 A technical introduction is available on Marco Schweighauser's blog: [www.mschweighauser.com](https://www.mschweighauser.com/make-your-own-assembler-simulator-in-javascript-part1/).
@@ -20,7 +20,7 @@ A technical introduction is available on Marco Schweighauser's blog: [www.mschwe
 ### License
 **The MIT License**
 
-Copyright (c) 2015 Yuanchun Shi, Yu Chen, Junjie Mao, Yukang Yan 
+Copyright (c) 2015 Yuanchun Shi, Yu Chen, Junjie Mao, Yukang Yan
 
 Copyright (c) 2015 Marco Schweighauser
 
