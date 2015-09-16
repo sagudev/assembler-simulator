@@ -73,7 +73,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 }
             };
 
-            // Allowed registers: A, B, C, D, SP
+            // Allowed registers: R0 - RF
             var parseRegister = function (input) {
                 input = input.toUpperCase();
 
@@ -125,15 +125,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                     if (label !== undefined) {
                         return {type: typeNumber, value: label};
                     } else {
-/*                        if (typeReg === "regaddress") {
-
-                            register = parseOffsetAddressing(input);
-
-                            if (register !== undefined) {
-                                return {type: typeReg, value: register};
-                            }
-                        }*/
-
                         var value = parseNumber(input);
 
                         if (isNaN(value)) {
@@ -153,9 +144,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
             var getValue = function (input) {
                 switch (input.slice(0, 1)) {
-/*                    case '[': // [number] or [register]
-                        var address = input.slice(1, input.length - 1);
-                        return parseRegOrNumber(address, "regaddress", "address");*/
                     case '"': // "String"
                         var text = input.slice(1, input.length - 1);
                         var chars = [];
