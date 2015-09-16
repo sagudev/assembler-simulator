@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+    require('load-grunt-tasks')(grunt);
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
@@ -35,14 +37,42 @@ module.exports = function(grunt) {
         watch: {
             files: ['<%= jshint.files %>'],
             tasks: ['jshint', 'concat']
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8082,
+                    base: './',
+                    keepalive: true
+                }
+            }
+        },
+        php: {
+            dist: {
+                options: {
+                    port: 8082,
+                    base: '.',
+                    keepalive: true
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    grunt.registerTask('http', ['php']);
 
 };
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * tab-width: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -28,21 +28,25 @@
             <div class="col-lg-7 col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
+                      <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
                     </div>
-                    <div class="panel-body">
-                        <form role="form">
-                            <textarea id="sourceCode"
-                                      class="form-control source-code"
-                                      style="margin-bottom:5px;"
-                                      rows="30"
-                                      tab-support
-                                      select-line
-                                      ng-model="code"></textarea>
-                            <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
-                            <button type="button" class="btn btn-default" ng-click="upload()">Upload</button>
-                        </form>
-                    </div>
+                    <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
+                    <button type="button" class="btn btn-default" ng-click="upload()">Upload</button>
+		    Examples:
+                    <select ng-model="example" ng-options="item.id as item.desc for item in examples" ng-change="showExample(example)" ng-init="initExamples()"></select>
+		    <!-- <select id="examples" ng-change="showExample(x)" ng-model="x"> -->
+		    <!--   <option value="haha">haha</option> -->
+		    <!--   <option value="hoho">hoho</option> -->
+		    <!-- </select> -->
+                    <form role="form">
+                      <textarea id="sourceCode"
+                                class="form-control source-code"
+                                style="margin-bottom:5px;"
+                                rows="30"
+                                tab-support
+                                select-line
+                                ng-model="code"></textarea>
+                    </form>
                 </div>
             </div>
             <div class="clearfix visible-xs visible-sm"></div>

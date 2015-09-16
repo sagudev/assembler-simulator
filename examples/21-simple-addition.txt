@@ -1,0 +1,7 @@
+; c = a + b
+
+LOADI R5, 10
+LOADI R6, 20
+ADDI  R5, R5, R6
+STORE R5, 10
+HALT

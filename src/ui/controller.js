@@ -1,4 +1,4 @@
-app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', 'uploader', function ($document, $scope, $timeout, cpu, memory, assembler, uploader) {
+app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memory', 'assembler', 'uploader', function ($document, $scope, $timeout, $http, cpu, memory, assembler, uploader) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -14,7 +14,8 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 8, desc: "8 HZ"},
                      {speed: 16, desc: "16 HZ"}];
     $scope.speed = 4;
-    $scope.outputStartIndex = 232;
+    $scope.example = '';
+    $scope.examples = [];
 
     //$scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
     $scope.code = "; Simple example\n; R1+R2=R0\n\nLOADI R0,10\nLOADI R1,20\nLOADI R2,30\nADDI R0,R1,R2\nHALT";
@@ -137,6 +138,32 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
+    $scope.initExamples = function() {
+        var response = $http.get('examples/scandir.php');
+        response.success(function(data, status, headers, config) {
+            var filelist = String(data).split(',');
+            for (var i = 0, l = filelist.length; i < l; i++) {
+                var contents = filelist[i].split('|');
+                var filename = contents[0], desc = contents[1];
+                $scope.examples.push({id: filename, desc: desc});
+            }
+        });
+        response.error(function(data, status, headers, config) {
+            console.error("ajax failed");
+        });
+    };
+
+    $scope.showExample = function(key) {
+        var response = $http.get('examples/' + $scope.example);
+
+        response.success(function(data, status, headers, config) {
+            $scope.code = data;
+        });
+        response.error(function(data, status, headers, config) {
+            console.error("ajax failed");
+        });
+    };
+
     $scope.jumpToLine = function (index) {
         $document[0].getElementById('sourceCode').scrollIntoView();
         $scope.selectedLine = $scope.mapping[index];
@@ -175,3 +202,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 }]);
+
+/*
+ * Local variables:
+ * c-basic-offset: 4
+ * tab-width: 4
+ * indent-tabs-mode: nil
+ * End:
+ */
