@@ -4,7 +4,7 @@ V8-CPU simulator is used for labs& exercises on first-year(freshman) undergradua
 ####<a href="http://166.111.132.191:8080/" target="_blank">TRY IT ONLINE</a>
 
 ### Features
-- 8-bit CPU
+- 8-bit RISC CPU
 - 15 general purpose registers
 - program counter register
 - 1 timer count-downregister
