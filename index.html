@@ -51,6 +51,12 @@
             </div>
             <div class="clearfix visible-xs visible-sm"></div>
             <div class="col-lg-5 col-md-6">
+		<div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Printer</h4>
+                    </div>
+		    <div class="panel-body source-code">{{ printer.data }}</div>
+		</div>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">CPU & Memory</h4>
@@ -136,23 +142,6 @@
                                 <span style="margin-left:5px;">Instructions:</span>
                                 <a ng-click="displayInstr = true" ng-hide="displayInstr">Show</a>
                                 <a ng-click="displayInstr = false" ng-show="displayInstr">Hide</a>
-                                <!-- <span style="margin-left:5px;">View:</span> -->
-                                <!-- <a ng-click="displayHex = true" ng-hide="displayHex">Hex</a> -->
-                                <!-- <a ng-click="displayHex = false" ng-show="displayHex">Decimal</a> -->
-				<!-- <br> -->
-				<!-- Register addressing: -->
-                                <!-- <span style="margin-left:5px;">A:</span> -->
-                                <!-- <a ng-click="displayA = true" ng-hide="displayA">Show</a> -->
-                                <!-- <a ng-click="displayA = false" ng-show="displayA">Hide</a> -->
-                                <!-- <span style="margin-left:5px;">B:</span> -->
-                                <!-- <a ng-click="displayB = true" ng-hide="displayB">Show</a> -->
-                                <!-- <a ng-click="displayB = false" ng-show="displayB">Hide</a> -->
-                                <!-- <span style="margin-left:5px;">C:</span> -->
-                                <!-- <a ng-click="displayC = true" ng-hide="displayC">Show</a> -->
-                                <!-- <a ng-click="displayC = false" ng-show="displayC">Hide</a> -->
-                                <!-- <span style="margin-left:5px;">D:</span> -->
-                                <!-- <a ng-click="displayD = true" ng-hide="displayD">Show</a> -->
-                                <!-- <a ng-click="displayD = false" ng-show="displayD">Hide</a> -->
                             </small>
                         </p>
                     </div>
