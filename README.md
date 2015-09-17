@@ -6,9 +6,15 @@ V8-CPU simulator is used for labs& exercises on first-year(freshman) undergradua
 ### Features
 - 8-bit CPU
 - 15 general purpose registers
-- 1 timer interrupt register
+- program counter register
+- 1 timer count-downregister
 - 256 bytes of memory
-- 4MB disk
+- a printer(like a output serial)
+- assembler (see 'assemble' button)
+- binary code/data uploader(see 'upload' button)
+- several assembly code example(see 'Examples' list)
+- 4KB disk (To Be Done)
+- C-subset compiler (To Be Done)
 
 ### How to build
 Make sure you have <a href="http://www.gruntjs.com/" target="_blank">Grunt</a> installed to compile the `asmsimulator.js` script.
