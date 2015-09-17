@@ -7,9 +7,9 @@ app.service('printer', [function () {
         store: function(value) {
             var self = this;
             if (value < 16)
-                self.data += '0' + value.toString(16) + " ";
+                self.data += '0' + value.toString(16).toUpperCase() + " ";
             else
-                self.data += value.toString(16) + " ";
+                self.data += value.toString(16).toUpperCase() + " ";
         },
         reset: function () {
             var self = this;

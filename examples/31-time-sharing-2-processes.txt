@@ -1,9 +1,9 @@
 ; 3.1 Time-sharing Between Two Processes
 
 .programA@0x00:
-	LOADB	R0, 0x00
-	LOADB	R1, 0x00
-	LOADB	R2, 0x01
+	LOADB	R0, 0
+	LOADB	R1, 0
+	LOADB	R2, 1
 loop_a:
 	ADDI	R0, R0, R1
 	ADDI	R1, R1, R2

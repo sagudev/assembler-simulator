@@ -4,8 +4,8 @@
 
 .entry:
 	;; Initialize some constants:
-	LOADB	R1, 0x01
-	LOADB	R2, 0xFF
+	LOADB	R1, 1
+	LOADB	R2, -1
 
 	LOADB	R3, .data+1           ;; loop variable of the outer loop
 outer_loop:

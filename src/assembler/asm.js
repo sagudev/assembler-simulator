@@ -30,7 +30,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
             // Use https://www.debuggex.com/
             // Matches: "label: INSTRUCTION OPERAND1, OPERAND2, OPERAND3
             // GROUPS:     1         3         4         7         10
-            var regex = /^[\t ]*(?:([.A-Za-z]\w*)(@\w+)?[:])?(?:[\t ]*([A-Za-z]{2,6})(?:[\t ]+([.A-Za-z0-9]\w*((\+|-)\d+)?)(?:[\t ]*[,][\t ]*([.A-Za-z0-9]\w*((\+|-)\d+)?)(?:[\t ]*[,][\t ]*([.A-Za-z0-9]\w*((\+|-)\d+)?))?)?)?)?/;
+            var regex = /^[\t ]*(?:([.A-Za-z]\w*)(@\w+)?[:])?(?:[\t ]*([A-Za-z]{2,6})(?:[\t ]+([-.A-Za-z0-9]\w*((\+|-)\d+)?)(?:[\t ]*[,][\t ]*([-.A-Za-z0-9]\w*((\+|-)\d+)?)(?:[\t ]*[,][\t ]*([-.A-Za-z0-9]\w*((\+|-)\d+)?))?)?)?)?/;
                 //^[\t ]*(?:([.A-Za-z]\w*)(@\w+)?[:])?  -- label: or nothing
                 //(?:[\t ]*([A-Za-z]{2,6})              -- instruction
                 //([.A-Za-z0-9]\w*((\+|-)\d+)?)         -- (OPERAND1)
@@ -61,7 +61,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (input.slice(0, 2) === "0x") {
                     return parseInt(input.slice(2), 16);
                 } else if (regexNum.exec(input)) {
-                    return parseInt(input, 10);
+                    return parseInt(input, 10) & 0xFF;
                 } else {
                     return undefined;
                 }
