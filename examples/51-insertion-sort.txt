@@ -1,0 +1,46 @@
+; 5.1 Insertion Sort
+;
+; The list of numbers to be sorted is stored from .data
+
+.entry:
+	;; Initialize some constants:
+	LOADB	R1, 0x01
+	LOADB	R2, 0xFF
+
+	LOADB	R3, .data+1           ;; loop variable of the outer loop
+outer_loop:
+	LOADB	R0, .data_end
+	JUMP	R3, outer_loop_end
+	LOADP	R4, R3                ;; the pivot
+
+	MOVE	R5, R3                ;; loop variable of the outer loop
+inner_loop:
+	LOADB	R0, .data
+	JUMP	R5, inner_loop_end
+	MOVE	R6, R5
+	ADDI	R5, R5, R2
+	LOADP	R0, R5
+	JUMPL	R4, tmp1
+	ADDI	R5, R5, R1
+	JUMP	R0, inner_loop_end
+tmp1:	STOREP	R0, R6
+	JUMP	R0, inner_loop
+
+inner_loop_end:
+	STOREP	R4, R5
+	ADDI	R3, R3, R1
+	JUMP	R0, outer_loop
+
+outer_loop_end:
+	HALT
+
+.data@0x40:
+	DB	0x20
+	DB	0x34
+	DB	0xDE
+	DB	0x65
+	DB	0xAA
+	DB	0xC0
+	DB	0x00
+	DB	0xF1
+.data_end:

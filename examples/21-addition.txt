@@ -1,4 +1,4 @@
-; c = a + b
+; 2.1 c = a + b
 
 .data@0x6C:
 	DB	0x01

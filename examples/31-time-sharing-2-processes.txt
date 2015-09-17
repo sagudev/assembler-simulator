@@ -1,1 +1,90 @@
-; TODO Time-sharing between two processes
+; 3.1 Time-sharing Between Two Processes
+
+.programA@0x00:
+	LOADB	R0, 0x00
+	LOADB	R1, 0x00
+	LOADB	R2, 0x01
+loop_a:
+	ADDI	R0, R0, R1
+	ADDI	R1, R1, R2
+	JUMP	R0, loop_a
+
+.programB@0x40:
+	LOADB	R0, 0x00
+	LOADB	R1, 0x00
+	LOADB	R2, 0x58
+loop_b:
+	ADDF	R0, R0, R1
+	ADDF	R1, R1, R2
+	JUMP	R0, loop_b
+
+interrupt_handler@0x80:
+	STOREM	R0, tmp2
+	LOADM	R0, saved_regs
+	STOREM	R0, tmp1
+	LOADM	R0, tmp2
+	STOREM	R0, saved_regs
+
+	LOADM	R0, saved_pc
+	STOREM	R0, jmp+1
+
+	LOADM	R0, interrupted_pc
+	STOREM	R0, saved_pc
+
+	MOVE	R0, R1
+	LOADM	R1, saved_regs+1
+	STOREM	R0, saved_regs+1
+	MOVE	R0, R2
+	LOADM	R2, saved_regs+2
+	STOREM	R0, saved_regs+2
+	MOVE	R0, R3
+	LOADM	R3, saved_regs+3
+	STOREM	R0, saved_regs+3
+	MOVE	R0, R4
+	LOADM	R4, saved_regs+4
+	STOREM	R0, saved_regs+4
+	MOVE	R0, R5
+	LOADM	R5, saved_regs+5
+	STOREM	R0, saved_regs+5
+	MOVE	R0, R6
+	LOADM	R6, saved_regs+6
+	STOREM	R0, saved_regs+6
+	MOVE	R0, R7
+	LOADM	R7, saved_regs+7
+	STOREM	R0, saved_regs+7
+	MOVE	R0, R8
+	LOADM	R8, saved_regs+8
+	STOREM	R0, saved_regs+8
+	MOVE	R0, R9
+	LOADM	R9, saved_regs+9
+	STOREM	R0, saved_regs+9
+	MOVE	R0, RA
+	LOADM	RA, saved_regs+10
+	STOREM	R0, saved_regs+10
+	MOVE	R0, RB
+	LOADM	RB, saved_regs+11
+	STOREM	R0, saved_regs+11
+	MOVE	R0, RC
+	LOADM	RC, saved_regs+12
+	STOREM	R0, saved_regs+12
+	MOVE	R0, RD
+	LOADM	RD, saved_regs+13
+	STOREM	R0, saved_regs+13
+	MOVE	R0, RE
+	LOADM	RE, saved_regs+14
+	STOREM	R0, saved_regs+14
+
+	LOADM	R0, tmp1
+jmp:	JUMP	R0, 00
+
+saved_regs@0xEA:
+saved_pc@0xF9:
+tmp1@0xFA:
+tmp2@0xFB:
+interrupted_pc@0xFD:
+
+.entry@0xF0:
+	LOADB	RF, 0x80
+	LOADB	R0, 0x40
+	STOREM	R0, saved_pc
+	JUMP	R0, 0x00

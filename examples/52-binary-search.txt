@@ -1,0 +1,147 @@
+; 5.2 Binary Search
+;
+; This example implements the following function:
+;
+;     int list[];
+;     int binary_search(int begin, int end, int target) {
+;         if (end < begin)
+;             return -1;
+;         int mid = begin + (end - begin) / 2;
+;         int mid_val = list[mid];
+;         if (target == mid_val)
+;             return mid;
+;         else if (target < mid_val)
+;             return binary_search(begin, mid - 1, target);
+;         else
+;             return binary_search(mid + 1, end, target);
+;     }
+;
+; which will search for 'target' in the range [begin, end]
+; of the global list. The function returns the index of the
+; element if 'target' is found in the list. Otherwise it
+; returns -1.
+
+
+.entry:
+	;; initialize some constants
+	LOADB	R1, 0x01
+	LOADB	R2, 0xFF
+	;; initialize the stack
+	LOADB	RE, .stack
+
+	ADDI	RE, RE, R2
+	;; 3rd parameter 'target' = 0x34
+	ADDI	RE, RE, R2
+	LOADB	R3, 0x34
+	STOREP	R3, RE
+	;; 2nd parameter 'end' = .data_end - .data - 1
+	ADDI	RE, RE, R2
+	LOADB	R3, .data
+	XOR	R3, R3, R2
+	LOADB	R4, .data_end
+	ADDI	R3, R3, R4
+	STOREP	R3, RE
+	;; 1st parameter 'begin' = 0
+	ADDI	RE, RE, R2
+	LOADB	R3, 0x00
+	STOREP	R3, RE
+	;; return address
+	ADDI	RE, RE, R2
+	LOADB	R3, tmp1
+	STOREP	R3, RE
+	JUMP	R0, binary_search
+tmp1:	LOADB	R3, 0x04
+	ADDI	RE, RE, R3
+	LOADP	R0, RE
+	ADDI	RE, RE, R1
+	HALT
+
+binary_search:
+	ADDI	R3, RE, R1
+	LOADP	RA, R3       ; 1st argument 'begin'
+	ADDI	R3, R3, R1
+	LOADP	RB, R3       ; 2nd argument 'end'
+	ADDI	R3, R3, R1
+	LOADP	RC, R3       ; 3rd argument 'target'
+	LOADB	RD, 0xFF     ; RD has value to be returned
+
+        ;; if (end < begin)
+	;;     return -1;
+	MOVE	R0, RA
+	JUMPL	RB, end
+
+	;; int mid = begin + (end - begin) / 2;
+	XOR	R4, RA, R2
+	ADDI	R4, R4, R1
+	ADDI	R4, R4, RB
+	LOADB	R3, 0xFE
+	AND	R4, R4, R3
+	ROT	R4, 1
+	ADDI	R4, R4, RA
+
+	;; int mid_val = list[middle];
+	LOADB	R5, .data
+	ADDI	R5, R5, R4
+	LOADP	R5, R5
+
+	MOVE	R0, R5
+	JUMP	RC, equal
+	JUMPL	RC, target_less_than_mid
+	JUMP	R0, target_greater_than_mid
+
+equal:
+	;; if (target == mid_val)
+        ;;     return mid;
+	MOVE	RD, R4
+	JUMP	R0, end
+
+target_less_than_mid:
+	;; else if (target < mid_val)
+        ;;     return binary_search(begin, mid - 1, target);
+	MOVE   R8, RA
+	MOVE   R9, R4
+	ADDI   R9, R9, R2
+	JUMP   R0, recursive_call
+
+target_greater_than_mid:
+	;; else
+        ;;     return binary_search(mid + 1, end, target);
+	MOVE   R8, R4
+	ADDI   R8, R8, R1
+	MOVE   R9, RB
+
+recursive_call:
+	ADDI	RE, RE, R2
+	ADDI	RE, RE, R2
+	STOREP	RC, RE
+	ADDI	RE, RE, R2
+	STOREP	R9, RE
+	ADDI	RE, RE, R2
+	STOREP	R8, RE
+	ADDI	RE, RE, R2
+	LOADB	R4, tmp2
+	STOREP	R4, RE
+	JUMP	R0, binary_search
+tmp2:	LOADB	R4, 0x04
+	ADDI	RE, RE, R4
+	LOADP	RD, RE
+	ADDI	RE, RE, R1
+end:
+	LOADB	R3, 0x04
+	ADDI	R3, RE, R3
+	STOREP	RD, R3
+	LOADP	R3, RE
+	STOREM	R3, ret+1
+ret:	JUMP	R0, 0x00
+
+.data@0xA0:
+	DB	0xAA
+	DB	0xC0
+	DB	0xDE
+	DB	0xF1
+	DB	0x00
+	DB	0x20
+	DB	0x34
+	DB	0x65
+.data_end:
+.stack@0xF8:

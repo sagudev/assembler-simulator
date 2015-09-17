@@ -150,7 +150,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             if (self.countdown > 0 && !self.updateTimer) {
                 self.countdown -= 1;
                 if (self.countdown === 0) {
-                    memory.store(0xFE, self.ip);
+                    memory.store(0xFD, self.ip);
                     self.ip = 0x80;
                     self.countdown = readReg(15);
                     self.status = '(Interrupted!)';

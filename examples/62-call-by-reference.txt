@@ -1,0 +1,66 @@
+; 6.2 Passing Parameters by Reference
+;
+; The corresponding C code looks like this:
+;
+;     int a = 0xDE, b = 0xFA;
+;     int swap (int *a, int *b) {
+;         int c = *a;
+;         *a = *b;
+;         *b = c;
+;         return (*a + *b);
+;     }
+;     main() {
+;         swap(&a, &b);
+;     }
+
+.entry:
+	;; initialize some constants
+	LOADB	R1, 0x01
+	LOADB	R2, 0xFF
+	;; initialize the stack
+	LOADB	RE, .stack
+	;; push a slot for the return value
+	ADDI	RE, RE, R2
+	;; push the second parameter
+	ADDI	RE, RE, R2
+	LOADB	R3, .data+1
+	STOREP	R3, RE
+	;; push the first parameter
+	ADDI	RE, RE, R2
+	LOADB	R3, .data
+	STOREP	R3, RE
+	;; push the return address
+	ADDI	RE, RE, R2
+	LOADB	R3, next
+	STOREP	R3, RE
+	JUMP	R0, swap
+next:	LOADB	R4, 0x04
+	ADDI	RE, RE, R4
+	HALT
+
+swap@0x40:
+	ADDI	R8, RE, R1
+	LOADP	RA, R8      ; the first parameter
+	ADDI	R8, R8, R1
+	LOADP	RB, R8      ; the second parameter
+	;; int c = *a;
+	LOADP	RC, RA
+	;; *a = *b;
+	LOADP	RD, RB
+	STOREP	RD, RA
+	;; *b = c;
+	STOREP	RC, RB
+	;; return (*a + *b);
+	LOADP	RC, RA
+	LOADP	RD, RB
+	ADDI	RD, RC, RD
+	ADDI	R8, R8, R1
+	STOREP	RD, R8
+	LOADP	R8, RE
+	STOREM	R8, ret+1
+ret:	JUMP	R0, 00
+
+.stack@0x80:
+.data@0x80:
+	DB	0xDE
+	DB	0xFA
