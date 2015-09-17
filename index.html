@@ -171,11 +171,7 @@
                             <tr ng-repeat="(name, value) in labels" class="codelabel">
                                 <td class="codelabel-name">{{ name }}</td>
                                 <td class="codelabel-line"><a ng-click="jumpToLine(value)">{{ value | number:displayHex }}</a></td>
-                                <td class="codelabel-value">{{ memory.data[value] | number:displayHex }}
-                                    <span ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
-                                        ('{{ getChar(memory.data[value]) }}')
-                                    </span>
-                                </td>
+                                <td class="codelabel-value">{{ memory.data[value] | number:displayHex }}</td>
                             </tr>
                         </table>
                     </div>

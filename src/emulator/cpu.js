@@ -73,6 +73,18 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 return result;
             };
 
+            var updateIR = function(instr) {
+                self.ir = '';
+                if (instr[0] <= 15)
+                    self.ir += '0' + instr[0].toString(16);
+                else
+                    self.ir += instr[0].toString(16);
+                if (instr[1] <= 15)
+                    self.ir += '0' + instr[1].toString(16);
+                else
+                    self.ir += instr[1].toString(16);
+            };
+
             self.updateTimer = false;
             self.status = '';
 
@@ -80,7 +92,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             var opcode = instr[0] >> 4;
             var regDest = instr[0] & 0x0F, regSource1 = instr[1] >> 4, regSource2 = instr[1] & 0x0F;
             var mem = instr[1], num = instr[1];
-            self.ir = (instr[0] << 8 | instr[1]).toString(16);
+            updateIR(instr);
             self.ip = (self.ip + 2) & 0xFF;
             switch(opcode) {
             case opcodes.LOAD_FROM_MEMORY:

@@ -17,7 +17,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.example = '';
     $scope.examples = [];
 
-    $scope.code = "; Simple example\n; R1+R2=R0\n\nLOADI R0,10\nLOADI R1,20\nLOADI R2,30\nADDI R0,R1,R2\nHALT";
+    $scope.code = ";; Choose an example above or write your own code here :)";
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
@@ -102,6 +102,10 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
 
             for (var i = 0, l = binary.length; i < l; i++) {
                 memory.data[i] = binary[i];
+            }
+
+            if ($scope.labels['.entry'] !== undefined) {
+                cpu.ip = $scope.labels['.entry'];
             }
         } catch (e) {
             if (e.line !== undefined) {

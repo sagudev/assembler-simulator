@@ -1,7 +1,13 @@
 ; c = a + b
 
-LOADI R5, 10
-LOADI R6, 20
-ADDI  R5, R5, R6
-STORE R5, 10
-HALT
+.data@0x6C:
+	DB	0x01
+	DB	0x02
+
+;; The program starts from 0xA0
+.entry@0xA0:
+	LOADM	R5, 0x6C
+	LOADM	R6, 0x6D
+	ADDI	R5, R5, R6
+	STOREM	R5, 0x6E
+	HALT
