@@ -24,8 +24,8 @@
 
 .entry:
 	;; initialize some constants
-	LOADB	R1, 0x01
-	LOADB	R2, 0xFF
+	LOADB	R1, 1
+	LOADB	R2, -1
 	;; initialize the stack
 	LOADB	RE, .stack
 
@@ -43,14 +43,14 @@
 	STOREP	R3, RE
 	;; 1st parameter 'begin' = 0
 	ADDI	RE, RE, R2
-	LOADB	R3, 0x00
+	LOADB	R3, 0
 	STOREP	R3, RE
 	;; return address
 	ADDI	RE, RE, R2
 	LOADB	R3, tmp1
 	STOREP	R3, RE
 	JUMP	R0, binary_search
-tmp1:	LOADB	R3, 0x04
+tmp1:	LOADB	R3, 4
 	ADDI	RE, RE, R3
 	LOADP	R0, RE
 	STOREM	R0, 0xFE     ; Send the result to the printer
@@ -64,7 +64,7 @@ binary_search:
 	LOADP	RB, R3       ; 2nd argument 'end'
 	ADDI	R3, R3, R1
 	LOADP	RC, R3       ; 3rd argument 'target'
-	LOADB	RD, 0xFF     ; RD has value to be returned
+	LOADB	RD, -1       ; RD has value to be returned
 
         ;; if (end < begin)
 	;;     return -1;
@@ -123,12 +123,12 @@ recursive_call:
 	LOADB	R4, tmp2
 	STOREP	R4, RE
 	JUMP	R0, binary_search
-tmp2:	LOADB	R4, 0x04
+tmp2:	LOADB	R4, 4
 	ADDI	RE, RE, R4
 	LOADP	RD, RE
 	ADDI	RE, RE, R1
 end:
-	LOADB	R3, 0x04
+	LOADB	R3, 4
 	ADDI	R3, RE, R3
 	STOREP	RD, R3
 	LOADP	R3, RE

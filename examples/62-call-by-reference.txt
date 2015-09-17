@@ -10,13 +10,13 @@
 ;         return (*a + *b);
 ;     }
 ;     main() {
-;         swap(&a, &b);
+;         print(swap(&a, &b));
 ;     }
 
 .entry:
 	;; initialize some constants
-	LOADB	R1, 0x01
-	LOADB	R2, 0xFF
+	LOADB	R1, 1
+	LOADB	R2, -1
 	;; initialize the stack
 	LOADB	RE, .stack
 	;; push a slot for the return value
@@ -34,8 +34,11 @@
 	LOADB	R3, next
 	STOREP	R3, RE
 	JUMP	R0, swap
-next:	LOADB	R4, 0x04
+next:	LOADB	R4, 3
 	ADDI	RE, RE, R4
+	LOADP	R0, RE
+	STOREM	R0, 0xFE
+	ADDI	RE, RE, R1
 	HALT
 
 swap@0x40:
