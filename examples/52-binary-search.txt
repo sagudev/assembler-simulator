@@ -53,6 +53,7 @@
 tmp1:	LOADB	R3, 0x04
 	ADDI	RE, RE, R3
 	LOADP	R0, RE
+	STOREM	R0, 0xFE     ; Send the result to the printer
 	ADDI	RE, RE, R1
 	HALT
 

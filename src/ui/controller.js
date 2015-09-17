@@ -1,4 +1,5 @@
-app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memory', 'assembler', 'uploader', function ($document, $scope, $timeout, $http, cpu, memory, assembler, uploader) {
+app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memory', 'printer', 'assembler', 'uploader', function ($document, $scope, $timeout, $http, cpu, memory, printer, assembler, uploader) {
+    $scope.printer = printer;
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -21,6 +22,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
+        printer.reset();
         $scope.error = '';
         $scope.selectedLine = -1;
         $scope.mapping = undefined;

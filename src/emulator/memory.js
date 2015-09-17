@@ -1,4 +1,4 @@
-app.service('memory', [function () {
+app.service('memory', ['printer', function (printer) {
     var memory = {
         data: Array(256),
         lastAccess: -1,
@@ -10,6 +10,10 @@ app.service('memory', [function () {
             }
 
             self.lastAccess = address;
+
+            if (address == 0xFE) {
+                return printer.load();
+            }
             return self.data[address];
         },
         store: function (address, value) {
@@ -20,6 +24,10 @@ app.service('memory', [function () {
             }
 
             self.lastAccess = address;
+
+            if (address == 0xFE) {
+                return printer.store(value);
+            }
             self.data[address] = value;
         },
         reset: function () {
