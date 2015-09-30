@@ -18,7 +18,9 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.example = '';
     $scope.examples = [];
 
-    $scope.code = ";; Choose an example above or write your own code here :)";
+    $scope.codeFormat = '';
+
+    $scope.code = ";; Choose an example above or write your own code here :)\n\n";
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
@@ -29,11 +31,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     };
 
     $scope.executeStep = function () {
-        if (!$scope.checkPrgrmLoaded()) {
-            $scope.assemble();
-        }
-
         try {
+            if (!$scope.checkPrgrmLoaded()) {
+                $scope.updateCode();
+            }
+
             // Execute
             var res = cpu.step();
 
@@ -51,8 +53,13 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
 
     var runner;
     $scope.run = function () {
-        if (!$scope.checkPrgrmLoaded()) {
-            $scope.assemble();
+        try {
+            if (!$scope.checkPrgrmLoaded()) {
+                $scope.updateCode();
+            }
+        } catch (e) {
+            $scope.error = e;
+            return;
         }
 
         $scope.isRunning = true;
@@ -90,9 +97,20 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
         }
     };
 
+    $scope.updateCode = function () {
+        if ($scope.codeFormat == 'assembly') {
+            $scope.assemble();
+        } else if ($scope.codeFormat == 'raw') {
+            $scope.upload();
+        } else {
+            throw "Please compile/assemble/upload your code.";
+        }
+    };
+
     $scope.assemble = function () {
         try {
             $scope.reset();
+            $scope.codeFormat = 'assembly';
 
             var assembly = assembler.go($scope.code);
             $scope.mapping = assembly.mapping;
@@ -122,6 +140,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.upload = function () {
         try {
             $scope.reset();
+            $scope.codeFormat = 'raw';
 
             var binarycode = uploader.go($scope.code);
             $scope.mapping = binarycode.mapping;

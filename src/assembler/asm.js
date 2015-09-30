@@ -10,13 +10,23 @@ app.service('uploader', ['opcodes', function (opcodes) {
             // Split text into code lines
             var lines = input.split('\n');
             for (var i = 0, l = lines.length; i < l; i++) {
-                var codes = input.split(' ');
+                var line = lines[i];
+                var end_of_line = line.indexOf(';');
+                if (end_of_line > 0)
+                    line = line.slice(0, end_of_line - 1);
+                else if (end_of_line === 0)
+                    line = '';
+                var codes = line.split(' ');
                 for (var j = 0, codenum = codes.length; j < codenum; j++) {
-                    var codevalue=parseInt(codes[j].slice(0,2), 16);
-                    if (codevalue < 0 || codevalue > 255) {
-                        throw "code must be a value between 0...255";
+                    if (codes[j] === '')
+                        continue;
+                    for (var k = 1; k < codes[j].length; k += 2) {
+                        var codevalue = parseInt(codes[j].slice(k - 1, k + 1), 16);
+                        if (codevalue < 0 || codevalue > 255) {
+                            throw "code must be a value between 0...255";
+                        }
+                        code.push(codevalue);
                     }
-                    code.push(codevalue);
                 }
             }
             return {code: code, mapping: mapping, labels: labels};
