@@ -1,0 +1,15 @@
+; Exercise-2.2 Floating-point Addition
+;
+; Requirement:
+;   * store -0.5 in R3
+;   * store 1.25 in R5
+;   * add numbers in R3 and R5 and store the result in R8
+;   * when the machine halts, R8 should hold the bit patterns representing 0.75 in
+;     floating point.
+;
+; The following program does not meet the above requirements. Try correcting it.
+
+2348
+255A
+6835
+C000

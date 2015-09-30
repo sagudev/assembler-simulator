@@ -1,4 +1,4 @@
-; 6.1 Passing Parameters by Value
+; HIDE 6.1 Passing Parameters by Value
 ;
 ; The corresponding C code looks like this:
 ;

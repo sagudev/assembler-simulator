@@ -1,4 +1,4 @@
-; 5.2 Binary Search
+; HIDE 5.2 Binary Search
 ;
 ; This example implements the following function:
 ;

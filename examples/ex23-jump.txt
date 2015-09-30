@@ -1,0 +1,16 @@
+; Exercise-2.3 Calculate 1 + 2 + ... + 10
+;
+; Requirement:
+;   * calculate 1 + 2 + ... + 10 and store the result in RC
+;
+; The following program does not meet the above requirements. Try correcting it.
+
+2010
+2101
+2C00
+2201
+B210
+5CC2
+5221
+B006
+C000

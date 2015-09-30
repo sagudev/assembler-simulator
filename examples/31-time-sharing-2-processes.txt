@@ -1,4 +1,4 @@
-; 3.1 Time-sharing Between Two Processes
+; HIDE 3.1 Time-sharing Between Two Processes
 
 .programA@0x00:
 	LOADB	R0, 0

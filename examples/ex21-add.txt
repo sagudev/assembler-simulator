@@ -1,0 +1,14 @@
+; Exercise-2.1 Integer Addition
+;
+; Requirement:
+;   * store 38 (in decimal) in R1
+;   * store 52 (in decimal) in R2
+;   * add numbers in R1 and R2 and store the result in R0
+;   * when the machine halts, R0 should hold the bit patterns representing 90.
+;
+; The following program does not meet the above requirements. Try correcting it.
+
+2138
+2252
+5120
+C000

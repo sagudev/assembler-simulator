@@ -1,13 +1,6 @@
-; 2.1 c = a + b
+; 2.1 R0 = R1 + R2
 
-.data@0x6C:
-	DB	1
-	DB	2
-
-;; The program starts from 0xA0
-.entry@0xA0:
-	LOADM	R5, 0x6C
-	LOADM	R6, 0x6D
-	ADDI	R5, R5, R6
-	STOREM	R5, 0x6E
-	HALT
+2134
+2218
+5012
+C000

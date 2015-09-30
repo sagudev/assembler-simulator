@@ -1,4 +1,4 @@
-; 6.2 Passing Parameters by Reference
+; HIDE 6.2 Passing Parameters by Reference
 ;
 ; The corresponding C code looks like this:
 ;
