@@ -1,4 +1,4 @@
-; HIDE 5.1 Insertion Sort
+; 5.1 Insertion Sort
 ;
 ; The list of numbers to be sorted is stored from .data
 
