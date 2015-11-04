@@ -1,0 +1,17 @@
+; Quiz(C) 2.2 Calculate 0 - 1 + 2 - 3 + 4 ...
+
+2006
+2101
+22FF
+2C00
+2D00
+2E01
+BD1C
+5CCD
+5DDE
+9DD2
+5DD1
+9EE2
+5EE1
+B00C
+C000

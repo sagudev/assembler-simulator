@@ -1,0 +1,17 @@
+; Quiz(B) 2.2 Calculate 1 - 2 + 3 - 4 ...
+
+2007
+2A01
+2BFF
+2C00
+2D01
+2E01
+BD1C
+5CCD
+5DDE
+9DDB
+5DDA
+9EEB
+5EEA
+B00C
+C000
