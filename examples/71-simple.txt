@@ -1,0 +1,50 @@
+; 7.1 Disk Operation Demo
+;
+; This small program loads sector 0 from the disk, place
+; the data in memory cells whose addresses range from 0x20
+; to 0x2F, and store the same data to sector 1 on the disk.
+;
+; To load a sector from the disk, you should:
+;
+;  1) Store to the memory address 0xFF, which is the register
+;     of the disk in V8 architecture, the sector address you
+;     want to load.
+;  2) Store to 0xFF the memory address where the data should
+;     be stored in.
+;  3) Store to 0xFF the constant 0, indicating that this is a
+;     LOAD operation.
+;  4) Load the bit pattern in 0xFF repeatedly until the pattern
+;     is not zero.
+;
+; Similar operations should be done to store a sector to the disk.
+;
+
+	LOADB	R0, 0
+	LOADB   R1, 1
+	LOADB   R2, 0x20
+
+	; Load from sector 0
+	STOREM  R0, 0xFF
+	STOREM  R2, 0xFF
+	STOREM  R0, 0xFF
+.again_load:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load
+
+	; Store to sector 1
+	STOREM	R1, 0xFF
+	STOREM	R2, 0xFF
+	STOREM	R1, 0xFF
+.again_store:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_store
+
+	HALT
+
+==========
+; Data in the disk are listed below.
+
+04 0C 05 0F 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

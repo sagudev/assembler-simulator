@@ -97,13 +97,21 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
             var assembly = assembler.go($scope.code);
             $scope.mapping = assembly.mapping;
             var binary = assembly.code;
+            var disk = assembly.disk;
             $scope.labels = assembly.labels;
 
             if (binary.length > memory.data.length)
-                throw "Binary code does not fit into the memory. Max " + memory.data.length + " bytes are allowed";
+                throw {error: "Binary code does not fit into the memory. Max " + memory.data.length + " bytes are allowed"};
+
+            if (disk.length > memory.diskdata.length)
+                throw {error: "Disk data does not fit into the disk. Max " + memory.diskdata.length + " bytes are allowed"};
 
             for (var i = 0, l = binary.length; i < l; i++) {
                 memory.data[i] = binary[i];
+            }
+
+            for (i = 0, l = disk.length; i < l; i++) {
+                memory.diskdata[i] = disk[i];
             }
 
             if ($scope.labels['.entry'] !== undefined) {

@@ -1,0 +1,166 @@
+; 7.2 Merge two sequential files
+;
+; Organization of the disk
+;
+;   On the disk, each file is represented by a file allocation
+;   table (FAT). The sector address 0 is used to represent the
+;   end of a file (EOF).
+;
+;   In this example, there are two files on the disk, namely
+;   file A and file B, whose FATs are located at sector
+;   address 1 and 2 respectively. Each record in these files
+;   uses exactly one sector. The first byte of each record is
+;   the key used for comparison. Given two ordered sequential
+;   files, the following program merges the two files and
+;   create a new file, namely file C, on the disk. The FAT of
+;   file C is located at sector address 3 on the disk.
+;
+; Register usage in the program
+;    R0   - For comparison
+;    R1   - The constant 1
+;           Sector address of FAT of file A
+;           The 'write to disk' command
+;    R2   - The constant 2
+;           Sector address of FAT of file B
+;    R3   - Pointer to in-memory FAT of file A
+;    R4   - Pointer to in-memory FAT of file B
+;    R5   - Pointer to in-memory FAT of file C
+;    R6   - Buffer for data in file A
+;    R7   - Buffer for data in file B
+;    R8   - Sector address of current record in file A
+;    R9   - Sector address of current record in file B
+;    RA   - Key of current record of file A
+;    RB   - Key of current record of file B
+;    RE   - Status of the disk
+
+.entry:
+	LOADB	R0, 0
+	LOADB   R1, 1
+	LOADB	R2, 2
+	LOADB   R3, fat_a
+	LOADB	R4, fat_b
+	LOADB	R5, fat_c
+	LOADB	R6, buffer_a
+	LOADB	R7, buffer_b
+
+	; load FAT of file A
+	STOREM	R1, 0xFF
+	STOREM	R3, 0xFF
+	STOREM	R0, 0xFF
+.again_load_fat_a:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load_fat_a
+
+	; load FAT of file B
+	STOREM	R2, 0xFF
+	STOREM	R4, 0xFF
+	STOREM	R0, 0xFF
+.again_load_fat_b:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load_fat_b
+
+	; load the first sector of file A
+	LOADP	R8, R3
+	STOREM	R8, 0xFF
+	STOREM	R6, 0xFF
+	STOREM	R0, 0xFF
+.again_load_sec_a:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load_sec_a
+
+	; load the first sector of file B
+	LOADP	R9, R4
+	STOREM	R9, 0xFF
+	STOREM	R7, 0xFF
+	STOREM	R0, 0xFF
+.again_load_sec_b:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load_sec_b
+
+	; begin of the main loop
+.loop:
+	; have we encounter an EOF (i.e. sector 00)?
+	JUMP	R8, .eof_a
+	JUMP	R9, .eof_b_1
+	JUMP	R0, .compare
+.eof_b_1:
+	JUMP	R0, .insert_record_of_a
+.eof_a:
+	JUMP	R9, .eof_b_2
+	JUMP	R0, .insert_record_of_b
+.eof_b_2:
+	JUMP	R0, .exit
+
+.compare:
+	LOADP	RA, R6
+	LOADP	RB, R7
+	MOVE	R0, RA
+	JUMPL	RB, .insert_record_of_b
+
+.insert_record_of_a:
+	STOREP	R8, R5
+	ADDI	R5, R5, R1
+	ADDI	R3, R3, R1
+	LOADP	R8, R3
+	STOREM	R8, 0xFF
+	STOREM	R6, 0xFF
+	JUMP	R0, .load_next
+
+.insert_record_of_b:
+	STOREP	R9, R5
+	ADDI	R5, R5, R1
+	ADDI	R4, R4, R1
+	LOADP	R9, R4
+	STOREM	R9, 0xFF
+	STOREM	R7, 0xFF
+
+.load_next:
+	LOADB	R0, 0
+	STOREM	R0, 0xFF
+.again_load_next:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_load_next
+	JUMP	R0, .loop
+
+.exit:
+	; store FAT of file C
+	LOADB	R2, 3
+	STOREM	R2, 0xFF
+	LOADB	R5, fat_c
+	STOREM	R5, 0xFF
+	STOREM	R1, 0xFF
+.again_write_fat_c:
+	LOADM	RE, 0xFF
+	JUMP	RE, .again_write_fat_c
+
+	HALT
+
+fat_a@0xA0:
+
+fat_b@0xB0:
+
+fat_c@0xC0:
+
+buffer_a@0xD0:
+
+buffer_b@0xE0:
+
+==========
+; Data in the disk are listed below.
+
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+06 0A 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+04 0C 05 0F 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+45 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+42 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+44 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+43 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+46 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
