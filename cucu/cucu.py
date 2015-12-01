@@ -6,7 +6,7 @@ import time
 # Interpret VM instruction
 #
 class CucuVM:
-	CUCU_PATH='cucu-dummy.exe'
+	CUCU_PATH='./cucu-cc'
 	def __init__(self, src, debug=False):
 		self.A = 0
 		self.B = 0
@@ -43,7 +43,7 @@ class CucuVM:
 		#op = op.replace(' ', '')
 		if (self.debug):
 			print("op", op)
-		
+
 		self.PC = self.PC + 8
 		if (op.startswith(';')):
 			return
@@ -105,9 +105,9 @@ class CucuVM:
 		elif (op.startswith('pop')):
 			n = int(op[3:], 16)
 			self.SP = self.SP + n*2
-		elif (op.startswith('A:=')): 
+		elif (op.startswith('A:=')):
 			self.A = int(op[3:], 16)
-		elif (op.startswith('sp@')): 
+		elif (op.startswith('sp@')):
 			self.A = self.SP + int(op[3:], 16)*2 # TODO
 			#print(self.A)
 		elif (op.startswith('jmp')):
@@ -128,5 +128,3 @@ class CucuVM:
 		print("A:%04x  B:%04x   PC:%x  SP:%x" % (self.A, self.B, self.PC, self.SP))
 		print("Mem:", self.mem)
 		print()
-
-

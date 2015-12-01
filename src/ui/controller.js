@@ -18,9 +18,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.example = '';
     $scope.examples = [];
 
-    $scope.codeFormat = '';
-
-    $scope.code = ";; Choose an example above or write your own code here :)\n\n";
+    $scope.code = ";; Choose an example above or write your own code here :)";
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
@@ -31,11 +29,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     };
 
     $scope.executeStep = function () {
-        try {
-            if (!$scope.checkPrgrmLoaded()) {
-                $scope.updateCode();
-            }
+        if (!$scope.checkPrgrmLoaded()) {
+            $scope.assemble();
+        }
 
+        try {
             // Execute
             var res = cpu.step();
 
@@ -53,13 +51,8 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
 
     var runner;
     $scope.run = function () {
-        try {
-            if (!$scope.checkPrgrmLoaded()) {
-                $scope.updateCode();
-            }
-        } catch (e) {
-            $scope.error = e;
-            return;
+        if (!$scope.checkPrgrmLoaded()) {
+            $scope.assemble();
         }
 
         $scope.isRunning = true;
@@ -97,20 +90,9 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
         }
     };
 
-    $scope.updateCode = function () {
-        if ($scope.codeFormat == 'assembly') {
-            $scope.assemble();
-        } else if ($scope.codeFormat == 'raw') {
-            $scope.upload();
-        } else {
-            throw "Please compile/assemble/upload your code.";
-        }
-    };
-
     $scope.assemble = function () {
         try {
             $scope.reset();
-            $scope.codeFormat = 'assembly';
 
             var assembly = assembler.go($scope.code);
             $scope.mapping = assembly.mapping;
@@ -140,7 +122,6 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
     $scope.upload = function () {
         try {
             $scope.reset();
-            $scope.codeFormat = 'raw';
 
             var binarycode = uploader.go($scope.code);
             $scope.mapping = binarycode.mapping;
@@ -161,6 +142,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', '$http', 'cpu', 'memo
                 $scope.error = e.error;
             }
         }
+    };
+
+    $scope.compile = function () {
+        $http.post('/', {"source": $scope.code}).success(function(response){
+        $scope.code = response; $scope.assemble();});
     };
 
     $scope.initExamples = function() {
