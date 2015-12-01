@@ -5,7 +5,7 @@ ASMSimulator.iml
 *~
 *.new
 *.old
-*.txt
+after.txt
 cucu-cc
 
 *.o
