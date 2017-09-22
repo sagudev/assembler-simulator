@@ -18,6 +18,24 @@ V8-CPU simulator is used for labs& exercises on first-year(freshman) undergradua
 
 ### How to build
 Make sure you have <a href="http://www.gruntjs.com/" target="_blank">Grunt</a> installed to compile the `asmsimulator.js` script.
+
+steps in ubuntu 16.04 x64
+```
+sudo apt install npm nodejs-legacy  php7.0-cli
+alias cnpm="npm --registry=https://registry.npm.taobao.org \
+--cache=$HOME/.npm/.cache/cnpm \
+--disturl=https://npm.taobao.org/dist \
+--userconfig=$HOME/.cnpmrc"
+cd v8-cpu
+cnpm install
+cnpm grunt-cli
+./node_modules/.bin/grunt
+cd cucu
+make install
+cd ..
+./node_modules/.bin/grunt http
+```
+
 Run `npm install && grunt` to build the project and `grunt http` to run.
 
 ### Background
