@@ -130,8 +130,8 @@ app.service('assembler', ['opcodes', function (opcodes) {
                         if (isNaN(value)) {
                             throw "Not a " + typeNumber + ": " + value;
                         }
-                        else if (value < 0 || value > 256)
-                            throw typeNumber + " must have a value between 0-256";
+                        else if (value < 0 || value >= MEMORY_COUNT)
+                            throw typeNumber + " must have a value between 0-"+(MEMORY_COUNT-1);
 
                         return {type: typeNumber, value: value};
                     }
