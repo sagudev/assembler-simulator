@@ -1,4 +1,4 @@
-app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', function ($document, $scope, $timeout, cpu, memory, assembler) {
+app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -12,9 +12,15 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.speeds = [{speed: 1, desc: "1 HZ"},
                      {speed: 4, desc: "4 HZ"},
                      {speed: 8, desc: "8 HZ"},
-                     {speed: 16, desc: "16 HZ"}];
+                     {speed: 16, desc: "16 HZ"},
+                     {speed: 32, desc: "32 HZ"},
+                     {speed: 64, desc: "64 HZ"},
+                     {speed: 1000, desc: "1 MHZ"},
+                     {speed: 1000000, desc: "1 GHZ"},
+                     {speed: 10000000, desc: "10 GHZ"}];
     $scope.speed = 4;
     $scope.outputStartIndex = 232;
+    $scope.outputStopIndex = 255;
 
     $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
 
@@ -125,8 +131,10 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.getMemoryCellCss = function (index) {
-        if (index >= $scope.outputStartIndex) {
+        if (index >= $scope.outputStartIndex && index <= $scope.outputStopIndex) {
             return 'output-bg';
+        } else if (index > $scope.outputStopIndex) {
+            return 'input-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';
         } else if (index > cpu.sp && index <= cpu.maxSP) {

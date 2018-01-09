@@ -131,8 +131,8 @@ var app = angular.module('ASMSimulator', []);
                         if (isNaN(value)) {
                             throw "Not a " + typeNumber + ": " + value;
                         }
-                        else if (value < 0 || value > 255)
-                            throw typeNumber + " must have a value between 0-255";
+                        else if (value < 0 || value > 256)
+                            throw typeNumber + " must have a value between 0-256";
 
                         return {type: typeNumber, value: value};
                     }
@@ -1230,9 +1230,41 @@ var app = angular.module('ASMSimulator', []);
     cpu.reset();
     return cpu;
 }]);
+;app.service('input', ['memory', function (memory) {
+    var input = {
+        address: 256,
+        state: false,
+        key: 20,
+        onkeyup: function(e) {
+            var self = this;
+
+            var eventKey = e.keyCode ? e.keyCode : e.which;
+
+            if (eventKey === self.key) {
+                var value = memory.load(self.address);
+                if(value == 255) {
+                    self.state = false;
+                }
+                else {
+                    self.state = true;
+                }
+                memory.store(self.address, self.state ? 255 : 0);
+            }
+        },
+        onkeydown: function(e) {
+            var self = this;
+            var eventKey = e.keyCode ? e.keyCode : e.which;
+            
+        }
+    };
+    document.onkeydown = function (e){ input.onkeydown(e);};
+    document.onkeyup = function (e){ input.onkeyup(e);};
+    memory.store(input.address, 0);
+    return input;
+}]);
 ;app.service('memory', [function () {
     var memory = {
-        data: Array(256),
+        data: Array(257),
         lastAccess: -1,
         load: function (address) {
             var self = this;
@@ -1347,7 +1379,7 @@ var app = angular.module('ASMSimulator', []);
 
     return opcodes;
 }]);
-;app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', function ($document, $scope, $timeout, cpu, memory, assembler) {
+;app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -1361,9 +1393,15 @@ var app = angular.module('ASMSimulator', []);
     $scope.speeds = [{speed: 1, desc: "1 HZ"},
                      {speed: 4, desc: "4 HZ"},
                      {speed: 8, desc: "8 HZ"},
-                     {speed: 16, desc: "16 HZ"}];
+                     {speed: 16, desc: "16 HZ"},
+                     {speed: 32, desc: "32 HZ"},
+                     {speed: 64, desc: "64 HZ"},
+                     {speed: 1000, desc: "1 MHZ"},
+                     {speed: 1000000, desc: "1 GHZ"},
+                     {speed: 10000000, desc: "10 GHZ"}];
     $scope.speed = 4;
     $scope.outputStartIndex = 232;
+    $scope.outputStopIndex = 255;
 
     $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
 
@@ -1474,8 +1512,10 @@ var app = angular.module('ASMSimulator', []);
     };
 
     $scope.getMemoryCellCss = function (index) {
-        if (index >= $scope.outputStartIndex) {
+        if (index >= $scope.outputStartIndex && index <= $scope.outputStopIndex) {
             return 'output-bg';
+        } else if (index > $scope.outputStopIndex) {
+            return 'input-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';
         } else if (index > cpu.sp && index <= cpu.maxSP) {

@@ -6,8 +6,18 @@
     background-color: #DFDFDF;
 }
 
+.input, .input-bg {
+    background-color: cyan;
+}
+
 .output {
     width: 1em;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    text-align: center;
+}
+.input {
+    width: 2em;
     margin-right: 1px;
     margin-bottom: 1px;
     text-align: center;
