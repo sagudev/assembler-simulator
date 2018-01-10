@@ -1380,7 +1380,89 @@ var app = angular.module('ASMSimulator', []);
 
     return opcodes;
 }]);
-;;app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
+;function setupMode() {
+    CodeMirror.defineSimpleMode("asm", {
+    // The start state contains the rules that are intially used
+    start: [
+      // The regex matches the token, the token property contains the type
+      // label definition
+      {regex: /(.?[a-zA-Z]*:)/,
+      token: ["tag"]},
+      // jump instruction
+      {regex: /(J.{1,2}[ \t])([^; \t\n]*)/,
+      token: ["keyword", "tag"]},
+      // call instruction
+      {regex: /(CALL[ \t])([^; \t\n]*)/,
+      token: ["keyword", "tag"]},
+      // other instructions
+      {regex: /[A-Z]{2,4}($|[ \t])/,
+      token: ["keyword", null]},
+      // registers/variables
+      {regex: /[ \t[]([A-D]){1}[, \]]/,
+        token: ["variable"]},
+      // comments
+      {regex: /;.*/, token:["comment"]},
+      // You can match multiple tokens at once. Note that the captured
+      // groups must span the whole string in this case
+      // number literals
+      {regex: /(\d+d?)/,
+       token: ["number"]},
+       // string mode
+       {regex: /"/,
+       next: "string"},
+       // character mode
+       {regex: /'/,
+       next: "character"}
+    ],
+    string: [
+        {regex: /[^"]/, token: "string"},
+        {regex: /"/,next:"start"}
+    ],
+    character: [
+        {regex: /[^']/, token: "string-2"},
+        {regex: /'/,next:"start"}
+    ],
+    // The meta property contains global information about the mode. It
+    // can contain properties like lineComment, which are supported by
+    // all modes, and also directives like dontIndentStates, which are
+    // specific to simple modes.
+    meta: {
+      lineComment: ";"
+    }
+  });
+}
+setupMode();;/*jshint multistr: true */
+var startCode = "; Simple example\n\
+; Writes Hello World to the output\n\
+\n\
+JMP start\n\
+hello: DB \"Hello World!\"; Variable\n\
+       DB 0				; String terminator\n\
+       \n\
+start:\n\
+	MOV C, hello        ; Point to var\n\
+	MOV D, 232			; Point to output\n\
+	CALL print\n\
+    HLT                 ; Stop execution\n\
+    \n\
+print:					; print(C:*from, D:*to)\n\
+	PUSH A\n\
+	PUSH B\n\
+	MOV B, 0\n\
+.loop:\n\
+	MOV A, [C]			; Get char from var\n\
+	MOV [D], A			; Write to output\n\
+	INC C\n\
+	INC D\n\
+	CMP B, [C]			; Check if end\n\
+	JNZ .loop			; jump if not\n\
+    \n\
+	POP B\n\
+	POP A\n\
+	RET";
+
+
+app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -1400,25 +1482,30 @@ var app = angular.module('ASMSimulator', []);
                      {speed: 1000, desc: "1 MHZ"},
                      {speed: 1000000, desc: "1 GHZ"},
                      {speed: 10000000, desc: "10 GHZ"}];
-    $scope.speed = 4;
+    $scope.speed = 8;
     $scope.outputStartIndex = 232;
     $scope.outputStopIndex = 255;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
+    $scope.code = startCode;
     var textarea = document.getElementById("sourceCode");
     var codeMirror = CodeMirror(function(elt) {
         textarea.parentNode.replaceChild(elt, textarea);
       },{
         lineNumbers: true,
-        value: $scope.code
+        value: $scope.code,
+        mode: "asm"
       });
     codeMirror.doc.setValue($scope.code);
-    console.log(codeMirror);
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
         $scope.error = '';
-        $scope.selectedLine = -1;
+        $scope.selectLine(0);
+    };
+
+    $scope.selectLine = function(line) {
+        $scope.selectedLine = line;
+        codeMirror.doc.setSelection({line:line, ch:0},{line:line+1, ch:0});
     };
 
     $scope.executeStep = function () {
@@ -1432,30 +1519,34 @@ var app = angular.module('ASMSimulator', []);
 
             // Mark in code
             if (cpu.ip in $scope.mapping) {
-                $scope.selectedLine = $scope.mapping[cpu.ip];
+                var line = $scope.mapping[cpu.ip];
+                $scope.selectLine(line);
             }
 
             return res;
         } catch (e) {
-            $scope.error = e;
+            $scope.error = ""+e;
             return false;
         }
+        return false;
     };
 
     var runner;
     $scope.run = function () {
+        var ready = true;
         if (!$scope.checkPrgrmLoaded()) {
-            $scope.assemble();
+            ready = $scope.assemble();
         }
-
-        $scope.isRunning = true;
-        runner = $timeout(function () {
-            if ($scope.executeStep() === true) {
-                $scope.run();
-            } else {
-                $scope.isRunning = false;
-            }
-        }, 1000 / $scope.speed);
+        if(ready) {
+            $scope.isRunning = true;
+            runner = $timeout(function () {
+                if ($scope.executeStep() === true) {
+                    $scope.run();
+                } else {
+                    $scope.isRunning = false;
+                }
+            }, 1000 / $scope.speed);
+        }
     };
 
     $scope.stop = function () {
@@ -1488,7 +1579,6 @@ var app = angular.module('ASMSimulator', []);
     $scope.assemble = function () {
         $scope.reset();
             var code = $scope.getCode();
-            console.log("assembling: "+code);
         try {
             var assembly = assembler.go(code);
             $scope.mapping = assembly.mapping;
@@ -1501,19 +1591,21 @@ var app = angular.module('ASMSimulator', []);
             for (var i = 0, l = binary.length; i < l; i++) {
                 memory.data[i] = binary[i];
             }
+            return true;
         } catch (e) {
             if (e.line !== undefined) {
-                $scope.error = e.line + " | " + e.error;
-                $scope.selectedLine = e.line;
+                $scope.error = (1+e.line) + " | " + e.error;
+                $scope.selectLine(e.line);
             } else {
                 $scope.error = "Unkown error:"+e.error;
             }
+            return false;
         }
     };
 
     $scope.jumpToLine = function (index) {
         $document[0].getElementById('sourceCode').scrollIntoView();
-        $scope.selectedLine = $scope.mapping[index];
+        $scope.selectLine($scope.mapping[index]);
     };
 
 
@@ -1615,9 +1707,7 @@ app.directive('selectLine', [function () {
 ;app.filter('startFrom', function() {
     return function(input, start) {
         start = +start; //parse to int
-        if(input !== undefined) {
-            return input.slice(start);
-        }
+        return input.slice(start);
     };
 });
 ;app.directive('tabSupport', [function () {
