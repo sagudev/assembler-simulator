@@ -1,3 +1,34 @@
+/*jshint multistr: true */
+var startCode = "; Simple example\n\
+; Writes Hello World to the output\n\
+\n\
+JMP start\n\
+hello: DB \"Hello World!\"; Variable\n\
+       DB 0				; String terminator\n\
+       \n\
+start:\n\
+	MOV C, hello        ; Point to var\n\
+	MOV D, 232			; Point to output\n\
+	CALL print\n\
+    HLT                 ; Stop execution\n\
+    \n\
+print:					; print(C:*from, D:*to)\n\
+	PUSH A\n\
+	PUSH B\n\
+	MOV B, 0\n\
+.loop:\n\
+	MOV A, [C]			; Get char from var\n\
+	MOV [D], A			; Write to output\n\
+	INC C\n\
+	INC D\n\
+	CMP B, [C]			; Check if end\n\
+	JNZ .loop			; jump if not\n\
+    \n\
+	POP B\n\
+	POP A\n\
+	RET";
+
+
 app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
     $scope.memory = memory;
     $scope.cpu = cpu;
@@ -18,17 +49,30 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 1000, desc: "1 MHZ"},
                      {speed: 1000000, desc: "1 GHZ"},
                      {speed: 10000000, desc: "10 GHZ"}];
-    $scope.speed = 4;
+    $scope.speed = 8;
     $scope.outputStartIndex = 232;
     $scope.outputStopIndex = 255;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
-
+    $scope.code = startCode;
+    var textarea = document.getElementById("sourceCode");
+    var codeMirror = CodeMirror(function(elt) {
+        textarea.parentNode.replaceChild(elt, textarea);
+      },{
+        lineNumbers: true,
+        value: $scope.code,
+        mode: "asm"
+      });
+    codeMirror.doc.setValue($scope.code);
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
         $scope.error = '';
-        $scope.selectedLine = -1;
+        $scope.selectLine(0);
+    };
+
+    $scope.selectLine = function(line) {
+        $scope.selectedLine = line;
+        codeMirror.doc.setSelection({line:line, ch:0},{line:line+1, ch:0});
     };
 
     $scope.executeStep = function () {
@@ -42,30 +86,34 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
 
             // Mark in code
             if (cpu.ip in $scope.mapping) {
-                $scope.selectedLine = $scope.mapping[cpu.ip];
+                var line = $scope.mapping[cpu.ip];
+                $scope.selectLine(line);
             }
 
             return res;
         } catch (e) {
-            $scope.error = e;
+            $scope.error = ""+e;
             return false;
         }
+        return false;
     };
 
     var runner;
     $scope.run = function () {
+        var ready = true;
         if (!$scope.checkPrgrmLoaded()) {
-            $scope.assemble();
+            ready = $scope.assemble();
         }
-
-        $scope.isRunning = true;
-        runner = $timeout(function () {
-            if ($scope.executeStep() === true) {
-                $scope.run();
-            } else {
-                $scope.isRunning = false;
-            }
-        }, 1000 / $scope.speed);
+        if(ready) {
+            $scope.isRunning = true;
+            runner = $timeout(function () {
+                if ($scope.executeStep() === true) {
+                    $scope.run();
+                } else {
+                    $scope.isRunning = false;
+                }
+            }, 1000 / $scope.speed);
+        }
     };
 
     $scope.stop = function () {
@@ -93,11 +141,13 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
-    $scope.assemble = function () {
-        try {
-            $scope.reset();
+    $scope.getCode = function () { return codeMirror.doc.getValue(); };
 
-            var assembly = assembler.go($scope.code);
+    $scope.assemble = function () {
+        $scope.reset();
+            var code = $scope.getCode();
+        try {
+            var assembly = assembler.go(code);
             $scope.mapping = assembly.mapping;
             var binary = assembly.code;
             $scope.labels = assembly.labels;
@@ -108,19 +158,21 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
             for (var i = 0, l = binary.length; i < l; i++) {
                 memory.data[i] = binary[i];
             }
+            return true;
         } catch (e) {
             if (e.line !== undefined) {
-                $scope.error = e.line + " | " + e.error;
-                $scope.selectedLine = e.line;
+                $scope.error = (1+e.line) + " | " + e.error;
+                $scope.selectLine(e.line);
             } else {
-                $scope.error = e.error;
+                $scope.error = "Unkown error:"+e.error;
             }
+            return false;
         }
     };
 
     $scope.jumpToLine = function (index) {
         $document[0].getElementById('sourceCode').scrollIntoView();
-        $scope.selectedLine = $scope.mapping[index];
+        $scope.selectLine($scope.mapping[index]);
     };
 
 

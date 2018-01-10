@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/style.css">
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <script src="http://codemirror.net/lib/codemirror.js"></script>
+    <script src="http://codemirror.net/addon/mode/simple.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css"/>
 </head>
 <body ng-controller="Ctrl">
     <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
@@ -31,7 +34,7 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
                     </div>
-                    <div class="panel-body">
+                    <div id="sourceCodeContainer" class="panel-body">
                         <form role="form">
                             <textarea id="sourceCode"
                                       class="form-control source-code"

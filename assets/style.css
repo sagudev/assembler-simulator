@@ -1,6 +1,13 @@
 .source-code {
     font-family: source-code-pro, Courier New;
 }
+#sourceCodeContainer {
+    height:auto;
+}
+
+.CodeMirror {
+    height: unset !important;
+}
 
 .output, .output-bg {
     background-color: #DFDFDF;
