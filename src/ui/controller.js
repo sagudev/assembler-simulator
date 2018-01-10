@@ -23,7 +23,15 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.outputStopIndex = 255;
 
     $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
-
+    var textarea = document.getElementById("sourceCode");
+    var codeMirror = CodeMirror(function(elt) {
+        textarea.parentNode.replaceChild(elt, textarea);
+      },{
+        lineNumbers: true,
+        value: $scope.code
+      });
+    codeMirror.doc.setValue($scope.code);
+    console.log(codeMirror);
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
@@ -93,11 +101,14 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
-    $scope.assemble = function () {
-        try {
-            $scope.reset();
+    $scope.getCode = function () { return codeMirror.doc.getValue(); };
 
-            var assembly = assembler.go($scope.code);
+    $scope.assemble = function () {
+        $scope.reset();
+            var code = $scope.getCode();
+            console.log("assembling: "+code);
+        try {
+            var assembly = assembler.go(code);
             $scope.mapping = assembly.mapping;
             var binary = assembly.code;
             $scope.labels = assembly.labels;
@@ -113,7 +124,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                 $scope.error = e.line + " | " + e.error;
                 $scope.selectedLine = e.line;
             } else {
-                $scope.error = e.error;
+                $scope.error = "Unkown error:"+e.error;
             }
         }
     };
