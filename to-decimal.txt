@@ -1,0 +1,71 @@
+; Simple example
+; writes based on input
+JMP .start
+one:	DB "1"
+	DB 0
+zero:	DB "0"
+	DB 0
+.start:
+	MOV A, [256]
+	CMP A, 255d
+	JZ .printone
+.printzero:
+	MOV D, 232
+	MOV C, zero
+	MOV B, [C]
+	MOV [D], B
+	JMP .start
+.printone:
+	MOV D, 232
+	MOV C, one
+	MOV B, [C]
+	MOV [D], B
+	JMP .start
+	
+; Simple example
+; takes binary string and adds up to decimal value
+JMP start
+.one: DB "1"			; 1
+.justbeforeinput: DB 0	; shortcut to get address before input
+.input: DB "00001111"	; input binary string (8 bits)
+; A: number value for index
+; B: string index address
+; C: string value at index
+; D: result by || bitwise
+start:
+	MOV D, 0 			; init result at 0
+	MOV B, .input		; move address of input string to B
+    ADD B, 7			; add 7 to address to reach last char
+    MOV A, 1			; start with value 1 (most right bit)
+.loop:
+	PUSH A
+	MOV C, [B]			; move current char value into C
+    PUSH C
+    MOV C, .one			; move value of "1" into A
+    MOV A, [C]
+    POP C
+    CMP C, A
+    POP A
+    JNZ .continueLoop
+.bitOn:
+	OR D, A				; add current number value to result
+.continueLoop:
+	DEC B				; go to next bit
+    MUL 2				; set number value at next bit
+    CMP B, .justbeforeinput		; are we at end?
+    JNZ .loop			; continue with next bit
+.writeOutput:
+	; C: output address
+    ; B: ?
+    ; A: division result
+	MOV C, 235			; move A to output start
+    MOV A, D
+    ;HLT
+    DIV 10
+    HLT
+    
+    
+    
+
+	
+    
