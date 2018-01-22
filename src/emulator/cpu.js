@@ -129,6 +129,9 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 switch(instr) {
                     case opcodes.NONE:
                         return false; // Abort step
+                    case opcodes.BREAK:
+                        self.ip++;
+                        return false; // Abort step
                     case opcodes.MOV_REG_TO_REG:
                         regTo = checkGPR_SP(memory.load(++self.ip));
                         regFrom = checkGPR_SP(memory.load(++self.ip));

@@ -221,7 +221,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     opCode = opcodes.NONE;
                                     code.push(opCode);
                                     break;
-
+                                case 'BRK':
+                                    checkNoExtraArg('BRK', match[op1_group]);
+                                    opCode = opcodes.BREAK;
+                                    code.push(opCode);
+                                    break;
                                 case 'MOV':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
