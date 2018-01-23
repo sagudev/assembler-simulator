@@ -1,35 +1,4 @@
-/*jshint multistr: true */
-var startCode = "; Simple example\n\
-; Writes Hello World to the output\n\
-\n\
-JMP start\n\
-hello: DB \"Hello World!\"; Variable\n\
-       DB 0				; String terminator\n\
-       \n\
-start:\n\
-	MOV C, hello        ; Point to var\n\
-	MOV D, 232			; Point to output\n\
-	CALL print\n\
-    HLT                 ; Stop execution\n\
-    \n\
-print:					; print(C:*from, D:*to)\n\
-	PUSH A\n\
-	PUSH B\n\
-	MOV B, 0\n\
-.loop:\n\
-	MOV A, [C]			; Get char from var\n\
-	MOV [D], A			; Write to output\n\
-	INC C\n\
-	INC D\n\
-	CMP B, [C]			; Check if end\n\
-	JNZ .loop			; jump if not\n\
-    \n\
-	POP B\n\
-	POP A\n\
-	RET";
-
-
-app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', function ($document, $scope, $timeout, cpu, memory, assembler, input) {
+app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler','input', 'samples', function ($document, $scope, $timeout, cpu, memory, assembler, input, samples) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -49,11 +18,13 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 1000, desc: "1 MHZ"},
                      {speed: 1000000, desc: "1 GHZ"},
                      {speed: 10000000, desc: "10 GHZ"}];
-    $scope.speed = 8;
+    $scope.speed = 16;
     $scope.outputStartIndex = 232;
     $scope.outputStopIndex = 255;
-
-    $scope.code = startCode;
+    $scope.samples = samples;
+    $scope.sample = samples[0];
+    $scope.previousSample = $scope.sample;
+    $scope.code = samples[0].code;
     var textarea = document.getElementById("sourceCode");
     var codeMirror = CodeMirror(function(elt) {
         textarea.parentNode.replaceChild(elt, textarea);
@@ -62,12 +33,28 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         value: $scope.code,
         mode: "asm"
       });
-    codeMirror.doc.setValue($scope.code);
+    $scope.setCode = function (code) {
+        $scope.code = code;
+        codeMirror.doc.setValue($scope.code);
+        $scope.sampleSetCode = codeMirror.doc.getValue();
+    };
+    $scope.setCode($scope.code);
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
         $scope.error = '';
         $scope.selectLine(0);
+    };
+
+    $scope.setSample = function(newSample) {
+        if($scope.getCode() != $scope.sampleSetCode) {
+            $scope.sampleSetCode = $scope.getCode(); // to make it pass next time
+            window.alert("Unsaved changes! Select again to load sample.");
+            $scope.sample = $scope.previousSample;
+            return false;
+        }
+        $scope.previousSample = newSample;
+        $scope.setCode(newSample.code);
     };
 
     $scope.selectLine = function(line) {
