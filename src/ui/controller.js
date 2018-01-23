@@ -15,6 +15,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 16, desc: "16 HZ"},
                      {speed: 32, desc: "32 HZ"},
                      {speed: 64, desc: "64 HZ"},
+                     {speed: 128, desc: "128 HZ"},
                      {speed: 1000, desc: "1 MHZ"},
                      {speed: 1000000, desc: "1 GHZ"},
                      {speed: 10000000, desc: "10 GHZ"}];
