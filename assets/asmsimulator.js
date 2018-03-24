@@ -1358,11 +1358,30 @@ var app = angular.module('ASMSimulator', []);
     $scope.displayB = false;
     $scope.displayC = false;
     $scope.displayD = false;
-    $scope.speeds = [{speed: 1, desc: "1 HZ"},
+    $scope.inputer1 =  0;
+    $scope.inputer2 =  0;
+    $scope.inputer3 =  0;
+    $scope.inputer4 =  0;
+    $scope.inputer5 =  0;
+    $scope.inputer6 =  0;
+    $scope.inputer7 =  0;
+    $scope.inputer8 =  0;
+    $scope.inputer9 =  0;
+    $scope.inputer10 =  0;
+    $scope.inputer11 =  0;
+    $scope.inputer12 =  0;
+    $scope.inputer13 =  0;
+    $scope.inputer14 =  0;
+    $scope.inputer15 =  0;
+    $scope.inputer16 =  0;
+    $scope.speeds = [
+                    {speed: 1, desc: "1 HZ"},
                      {speed: 4, desc: "4 HZ"},
                      {speed: 8, desc: "8 HZ"},
                      {speed: 16, desc: "16 HZ"},
-                     {speed: 1600, desc: "1600 HZ"}];
+                     {speed: 1600, desc: "1600 HZ"},
+                     {speed: 1600000, desc: "1600000 HZ"},
+                    ];
     $scope.speed = 16;
     $scope.outputStartIndex = 304;
 
@@ -1474,6 +1493,7 @@ var app = angular.module('ASMSimulator', []);
     };
 
     $scope.getMemoryCellCss = function (index) {
+    //    $scope.inputerf();
         if (index >= $scope.outputStartIndex) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
@@ -1485,7 +1505,32 @@ var app = angular.module('ASMSimulator', []);
         }
     };
 
+    $scope.inputerf = function () {
+        // $scope.inputer1
+        debugger;
+        //memory.store(adr, st);
+        memory.store(272, $scope.inputer1);
+        memory.store(273, $scope.inputer2);
+        memory.store(274, $scope.inputer3);
+        memory.store(275, $scope.inputer4);
+        memory.store(276, $scope.inputer5);
+        memory.store(277, $scope.inputer6);
+        memory.store(278, $scope.inputer7);
+        memory.store(279, $scope.inputer8);
+        memory.store(280, $scope.inputer9);
+        memory.store(281, $scope.inputer10);
+        memory.store(282, $scope.inputer11);
+        memory.store(283, $scope.inputer12);
+        memory.store(284, $scope.inputer13);
+        memory.store(285, $scope.inputer14);
+        memory.store(286, $scope.inputer15);
+        memory.store(287, $scope.inputer16);
+    };
+
+    
+
     $scope.getMemoryInnerCellCss = function (index) {
+    //    $scope.inputerf();
         if (index === cpu.ip) {
             return 'marker marker-ip';
         } else if (index === cpu.sp) {
