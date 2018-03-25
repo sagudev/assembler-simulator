@@ -1677,7 +1677,7 @@ var app = angular.module('ASMSimulator', []);
     
 
     $scope.getMemoryInnerCellCss = function (index) {
-        debugger;
+        //debugger;
     //    $scope.inputerf();
         if (index === cpu.ip) {
             return 'marker marker-ip';
