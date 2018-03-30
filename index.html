@@ -19,6 +19,7 @@
                     <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning"><span class="glyphicon glyphicon-forward"></span> Step</button>
                 </div>
                 <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">Reset</button>
+                <button type="button" class="btn btn-default navbar-btn" ng-click="reset_disk()">Reset disk</button>
             </div>
             <div class="navbar-header navbar-right">
                 <a class="navbar-brand" style="color:#FFFFFF">Simple 8-bit Assembler Simulator</a>
@@ -278,6 +279,19 @@
                                 <a ng-click="displayD = false" ng-show="displayD">Hide</a>
                             </small>
                         </p>
+                        <p class="text-muted">Disk</p>
+                        <div style="width:29em;" class="source-code">
+                            <div class="memory-block"
+                                 ng-repeat="m in memory.disk track by $index"
+                                 ng-class="getMemoryCellCssd($index)">
+                                 <div ng-class="getMemoryInnerCellCssd($index)" ng-switch="isInstructiond($index)">
+                                     <small ng-switch-default>{{ m | number:displayHex }}</small>
+                                     <a ng-switch-when="true" ng-click="jumpToLine($index)">
+                                         <small>{{ m | number:displayHex }}</small>
+                                     </a>
+                                 </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="panel panel-default">

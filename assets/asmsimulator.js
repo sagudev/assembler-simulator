@@ -11,6 +11,12 @@ var app = angular.module('ASMSimulator', []);
             var op1_group = 3;
             var op2_group = 7;
 
+            //regex for disk dxxxx x is number d is "d" or "D"
+            var disk_reg = /(D|d)(\d\d\d\d|\d\d\d|\d\d|\d)/
+
+            var disk_reg_test = function(adr) {
+                return disk_reg.test(adr);
+            }
             // MATCHES: "(+|-)INTEGER"
             var regexNum = /^[-+]?[0-9]+$/;
             // MATCHES: "(.L)abel"
@@ -57,6 +63,7 @@ var app = angular.module('ASMSimulator', []);
                 } else if (input === 'C') {
                     return 2;
                 } else if (input === 'D') {
+                   // debugger;
                     return 3;
                 } else if (input === 'SP') {
                     return 4;
@@ -131,7 +138,7 @@ var app = angular.module('ASMSimulator', []);
                 }
             };
 
-            var parseOffsetAddressing = function (input) {
+            var parseOffsetAddressing = function (input) {// here rega
                 input = input.toUpperCase();
                 var m = 0;
                 var base = 0;
@@ -242,13 +249,15 @@ var app = angular.module('ASMSimulator', []);
 
             // Allowed: Register, Label or Number; SP+/-Number is allowed for 'regaddress' type
             var parseRegOrNumber = function (input, typeReg, typeNumber) {
+                //console.log(input);
                 var register = parseRegister(input);
-
+                //console.log(register);
                 if (register !== undefined) {
                     return {type: typeReg, value: register};
                 } else {
                     var label = parseLabel(input);
-                    if (label !== undefined) {
+                    //console.log(label);
+                    if (label !== undefined && !disk_reg_test(label)) {
                         return {type: typeNumber, value: label};
                     } else {
                         if (typeReg === "regaddress") {
@@ -261,14 +270,17 @@ var app = angular.module('ASMSimulator', []);
                         }
 
                         var value = parseNumber(input);
-
+                        //console.log(value);
                         if (isNaN(value)) {
                             throw "Not a " + typeNumber + ": " + value;
+                        } else if (!disk_reg_test(input) && (value < 0 || value > 513)) {
+                            throw typeNumber + " must have a value between 0-512";
+                        } else if (disk_reg_test(input) && (value < 0 || value > 2049)) {
+                            throw typeNumber + " must have a value between 0-2048";
+                        } else {
+                            return {type: typeNumber, value: value};
                         }
-                        else if (value < 0 || value > 513)
-                            throw typeNumber + " must have a value between 0-513";
-
-                        return {type: typeNumber, value: value};
+                       
                     }
                 }
             };
@@ -278,27 +290,32 @@ var app = angular.module('ASMSimulator', []);
             };
 
             var getValue = function (input) {
-                switch (input.slice(0, 1)) {
-                    case '[': // [number] or [register]
-                        var address = input.slice(1, input.length - 1);
-                        return parseRegOrNumber(address, "regaddress", "address");
-                    case '"': // "String"
-                        var text = input.slice(1, input.length - 1);
-                        var chars = [];
 
-                        for (var i = 0, l = text.length; i < l; i++) {
-                            chars.push(text.charCodeAt(i));
-                        }
+                if (disk_reg_test(input)) {
+                    return {type: "number", value: input};
+                } else {
+                    switch (input.slice(0, 1)) {
+                        case '[': // [number] or [register]
+                            var address = input.slice(1, input.length - 1);
+                            return parseRegOrNumber(address, "regaddress", "address");
+                        case '"': // "String"
+                            var text = input.slice(1, input.length - 1);
+                            var chars = [];
 
-                        return {type: "numbers", value: chars};
-                    case "'": // 'C'
-                        var character = input.slice(1, input.length - 1);
-                        if (character.length > 1)
-                            throw "Only one character is allowed. Use String instead";
+                            for (var i = 0, l = text.length; i < l; i++) {
+                                chars.push(text.charCodeAt(i));
+                            }
 
-                        return {type: "number", value: character.charCodeAt(0)};
-                    default: // REGISTER, NUMBER or LABEL
-                        return parseRegOrNumber(input, "register", "number");
+                            return {type: "numbers", value: chars};
+                        case "'": // 'C'
+                            var character = input.slice(1, input.length - 1);
+                            if (character.length > 1)
+                                throw "Only one character is allowed. Use String instead";
+
+                            return {type: "number", value: character.charCodeAt(0)};
+                        default: // REGISTER, NUMBER or LABEL
+                            return parseRegOrNumber(input, "register", "number");
+                    }
                 }
             };
 
@@ -311,6 +328,7 @@ var app = angular.module('ASMSimulator', []);
                     throw "Label contains keyword: " + upperLabel;
 
                 labels[label] = code.length;
+                //console.log(label);
             };
 
             var checkNoExtraArg = function (instr, arg) {
@@ -360,6 +378,9 @@ var app = angular.module('ASMSimulator', []);
                                 case 'MOV':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
+                                    //console.table(p1);
+                                    //console.table(p2);
+                                    //console.log(match + p1 + "---" + p2 + "---------" + op1_group + "/" + op2_group + "-------" + match[op1_group] + "/" + match[op1_group]);
 
                                     if (p1.type === "register" && p2.type === "register")
                                         opCode = opcodes.MOV_REG_TO_REG;
@@ -756,15 +777,18 @@ var app = angular.module('ASMSimulator', []);
             // Replace label
             for (i = 0, l = code.length; i < l; i++) {
                 if (!angular.isNumber(code[i])) {
-                    if (code[i] in labels) {
-                        code[i] = labels[code[i]];
-                    } else {
-
-                        throw {error: "Undefined label: " + code[i]};
+                    if (!disk_reg_test(code[i])) {
+                        //debugger;
+                        if (code[i] in labels) {
+                            code[i] = labels[code[i]];
+                        } else {
+                            //debugger;
+                            throw {error: "Undefined label: " + code[i]};
+                        }
                     }
                 }
             }
-
+            //debugger;
             return {code: code, mapping: mapping, labels: labels};
         }
     };
@@ -844,7 +868,16 @@ var app = angular.module('ASMSimulator', []);
                     if ( offset > 15 ) {
                         offset = offset - 32;
                     }
+                    if (/(D|d)(\d\d\d\d|\d\d\d|\d\d|\d)/.test(base)) {
+                        console.log(base + " + " + offset);
+                        var ase;
+                        ase = base.slice(1);
+                        offset = parseInt(Number(ase)) + parseInt(Number(offset));
+                        base = "d";
+                        //debugger;
+                    }
                     
+                    console.log("is" + base+offset);
                     return base+offset;
                 };
 
@@ -903,6 +936,7 @@ var app = angular.module('ASMSimulator', []);
                 
                 var regTo, regFrom, memFrom, memTo, number;
                 var instr = memory.load(self.ip);
+                //console.log(self.ip);
                 switch(instr) {
                     case opcodes.NONE:
                         return false; // Abort step
@@ -1003,9 +1037,25 @@ var app = angular.module('ASMSimulator', []);
                         self.ip++;
                         break;
                     case opcodes.INC_REG:
+                    //----------------------------------------------------------------------------------------------
+                    //
                         regTo = checkGPR_SP(memory.load(++self.ip));
-                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo) + 1));
+                        var ra = getGPR_SP(regTo);
+                        //console.log(regTo + "---" + getGPR_SP(regTo) + "---" + checkOperation(getGPR_SP(regTo) + 1));// tale plus more bit number pa rezdel na d pa 12 kot pr eni fukciji prej
+                        if (/(D|d)(\d\d\d\d|\d\d\d|\d\d|\d)/.test(ra)) {
+                            ra = ra.slice(1);
+                            ra = parseInt(Number(ra)) + 1;
+                            ra = "d" + ra;
+                            //console.log("end ra is: " + ra);
+                            //debugger;
+                        } else {
+                            ra = ra + 1;
+                        }
+                        //setGPR_SP(regTo,checkOperation(getGPR_SP(regTo) + 1));
+                        setGPR_SP(regTo,checkOperation(ra));
                         self.ip++;
+                        
+                        //debugger;
                         break;
                     case opcodes.DEC_REG:
                         regTo = checkGPR_SP(memory.load(++self.ip));
@@ -1376,37 +1426,63 @@ var app = angular.module('ASMSimulator', []);
         lastAccess: -1,
         //rega
         rega_data: Array(32),
-        load: function (address) {
-            var self = this;
+        disk: Array(2048),
 
-            if (address < 0 || address >= self.data.length) {
-                throw "Memory access violation at " + address;
+        load: function (address) {
+            console.log("load " + address);
+            var self = this;
+            if (/(D|d)(\d\d\d\d|\d\d\d|\d\d|\d)/.test(address)) {
+                if (address < 0 || address >= self.disk.length) {
+                    throw "Memory access violation at " + address;
+                }
+    
+                return self.disk[address.slice(1)];
+            } else {
+                if (address < 0 || address >= self.data.length) {
+                    throw "Memory access violation at " + address;
+                }
+    
+                self.lastAccess = address;
+                return self.data[address];
             }
 
-            self.lastAccess = address;
-            return self.data[address];
         },
         store: function (address, value) {
+            console.log("store: " + value + " to "+ address);
+            //debugger;
             var self = this;
-
-            if (address < 0 || address >= self.data.length) {
-                throw "Memory access violation at " + address;
+            if (/(D|d)(\d\d\d\d|\d\d\d|\d\d|\d)/.test(address)) {
+                if (address < 0 || address >= self.disk.length) {
+                    throw "Memory access violation at " + address;
+                }
+                self.disk[address.slice(1)] = value;
+            } else {
+                if (address < 0 || address >= self.data.length) {
+                    throw "Memory access violation at " + address;
+                }
+    
+                self.lastAccess = address;
+                self.data[address] = value;
             }
-
-            self.lastAccess = address;
-            self.data[address] = value;
         },
-        reset: function () {
+        reset: function (disk = 0) {
             var self = this;
 
-            self.lastAccess = -1;
-            for (var i = 0, l = self.data.length; i < l; i++) {
-                self.data[i] = 0;
+
+            if (disk) {
+                for (var i = 0, l = self.disk.length; i < l; i++) {
+                    self.disk[i] = 0;
+                }
+            } else {
+                self.lastAccess = -1;
+                for (var i = 0, l = self.data.length; i < l; i++) {
+                    self.data[i] = 0;
+                }
             }
         }
     };
 
-    memory.reset();
+    memory.reset(1);
     return memory;
 }]);
 ;app.service('opcodes', [function() {
@@ -1532,13 +1608,18 @@ var app = angular.module('ASMSimulator', []);
     $scope.speed = 16;
     $scope.outputStartIndex = 304;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 304	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
-
+    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 304	; Point to output\n	MOV R1, D0	; Point to disk\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	MOV [R1], A	; Write to disk\n	INC C\n	INC D \n	INC R1  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
+    //memory.store("d12", "hi");
+    //debugger;
     $scope.reset = function () {
         cpu.reset();
         memory.reset();
         $scope.error = '';
         $scope.selectedLine = -1;
+    };
+
+    $scope.reset_disk = function () {
+        memory.reset(1);
     };
 
     $scope.executeStep = function () {
@@ -1641,7 +1722,8 @@ var app = angular.module('ASMSimulator', []);
 
     $scope.getMemoryCellCss = function (index) {
     //    $scope.inputerf();
-        if (index >= $scope.outputStartIndex) {
+     //   console.log(index);
+        if (index >= $scope.outputStartIndex && index != memory.disk) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';
@@ -1651,6 +1733,22 @@ var app = angular.module('ASMSimulator', []);
             return '';
         }
     };
+
+    $scope.isInstructiond = function (index) {
+        index = "d" + index;
+        //debugger;
+        return $scope.mapping !== undefined &&
+            $scope.mapping[index] !== undefined &&
+            $scope.displayInstr;
+    };
+
+    $scope.getMemoryCellCssd = function (index) {
+    //    $scope.inputerf();
+     //   console.log(index);
+            return '';
+        
+    };
+
 
     $scope.inputerf = function () {
         // $scope.inputer1
@@ -1674,7 +1772,12 @@ var app = angular.module('ASMSimulator', []);
         memory.store(287, $scope.inputer16);
     };
 
-    
+    $scope.getMemoryInnerCellCssd = function (index) {
+        //debugger;
+    //    $scope.inputerf();
+        return '';
+
+    };
 
     $scope.getMemoryInnerCellCss = function (index) {
         //debugger;
@@ -1697,6 +1800,9 @@ var app = angular.module('ASMSimulator', []);
     };
 }]);
 ;app.filter('flag', function() {
+    //console.log();
+    //console.log($scope);
+    //console.log(input);
     return function(input) {
         return input.toString().toUpperCase();
     };
