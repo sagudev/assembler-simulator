@@ -149,7 +149,7 @@
                     </div>
                     <div class="panel-body source-code">
                         <div style="float:left;" class="output"
-                             ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
+                             ng-repeat="m in memory.osave track by $index">
                             <span>{{ getChar(m) }}</span>
                         </div>
                     </div>
@@ -305,6 +305,26 @@
                                  </div>
                             </div>
                         </div>
+                        <p class="text-muted">Input</p>
+                        <div style="width:29em;" class="source-code">
+                            <div class="memory-block"
+                                 ng-repeat="m in memory.isave track by $index"
+                                 ng-class="getMemoryCellCss_i($index)">
+                                 <div ng-class="getMemoryInnerCellCss_i($index)" title="{{ ttle_i($index) }}">
+                                     <small>{{ m | number:displayHex }}</small>
+                                 </div>
+                            </div>
+                        </div>
+                        <p class="text-muted">Output</p>
+                        <div style="width:29em;" class="source-code">
+                            <div class="memory-block"
+                                 ng-repeat="m in memory.osave track by $index"
+                                 ng-class="getMemoryCellCss_o($index)">
+                                 <div ng-class="getMemoryInnerCellCss_o($index)" title="{{ ttle_o($index) }}">
+                                     <small>{{ m | number:displayHex }}</small>
+                                 </div>
+                            </div>
+                        </div>
                         <p style="margin-top:5px;">
                             <small>
                                 <span>Clock speed:</span>
@@ -375,7 +395,7 @@
             </div>
         </div>
         <hr style="margin-top:10px;margin-bottom:10px;"/>
-        <p>Version: 2.5.3</p>
+        <p>Version: 2.5.4</p>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
     <script src="assets/asmsimulator.js"></script>
