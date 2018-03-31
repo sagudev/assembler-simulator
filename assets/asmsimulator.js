@@ -1811,8 +1811,19 @@ var app = angular.module('ASMSimulator', []);
 
     $scope.getMemoryInnerCellCssd = function (index) {
         //debugger;
+        index = "d" + index;
     //    $scope.inputerf();
-        return '';
+        if (index === cpu.gpr[0] && $scope.displayA) {
+            return 'marker marker-a';
+        } else if (index === cpu.gpr[1] && $scope.displayB) {
+            return 'marker marker-b';
+        } else if (index === cpu.gpr[2] && $scope.displayC) {
+            return 'marker marker-c';
+        } else if (index === cpu.gpr[3] && $scope.displayD) {
+            return 'marker marker-d';
+        } else {
+            return '';
+        }
 
     };
 
