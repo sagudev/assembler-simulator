@@ -1810,7 +1810,117 @@ var app = angular.module('ASMSimulator', []);
         memory.store(287, $scope.inputer16);
     };
 
+    $scope.ttled = function (index) {
+        /* document.getElementsByClassName('marker-R1').title = 'R1';
+        document.getElementsByClassName('marker-R2').title = 'R2';
+        document.getElementsByClassName('marker-R3').title = 'R3';
+        document.getElementsByClassName('marker-R4').title = 'R4';
+        document.getElementsByClassName('marker-R5').title = 'R5';
+        document.getElementsByClassName('marker-R6').title = 'R6';
+        document.getElementsByClassName('marker-R7').title = 'R7';
+        document.getElementsByClassName('marker-R8').title = 'R8';
+        document.getElementsByClassName('marker-R9').title = 'R9';
+        document.getElementsByClassName('marker-R10').title = 'R10';
+        document.getElementsByClassName('marker-R11').title = 'R11';
+        document.getElementsByClassName('marker-R12').title = 'R12';
+        document.getElementsByClassName('marker-R13').title = 'R13';
+        document.getElementsByClassName('marker-R14').title = 'R14';
+        document.getElementsByClassName('marker-R15').title = 'R15';
+        document.getElementsByClassName('marker-R16').title = 'R16'; */
+        index = "d" + index;
+        if (index === cpu.gpr[0] && $scope.displayA) {
+            return 'A';
+        } else if (index === cpu.gpr[1] && $scope.displayB) {
+            return 'B';
+        } else if (index === cpu.gpr[2] && $scope.displayC) {
+            return 'C';
+        } else if (index === cpu.gpr[3] && $scope.displayD) {
+            return 'D';
+        } else if (index === cpu.gpr[5] && $scope.displayR16) {
+            return 'R1';
+        } else if (index === cpu.gpr[6] && $scope.displayR16) {
+            return 'R2';
+        } else if (index === cpu.gpr[7] && $scope.displayR16) {
+            return 'R3';
+        } else if (index === cpu.gpr[8] && $scope.displayR16) {
+            return 'R4';
+        } else if (index === cpu.gpr[9] && $scope.displayR16) {
+            return 'R5';
+        } else if (index === cpu.gpr[10] && $scope.displayR16) {
+            return 'R6';
+        } else if (index === cpu.gpr[11] && $scope.displayR16) {
+            return 'R7';
+        } else if (index === cpu.gpr[12] && $scope.displayR16) {
+            return 'R8';
+        } else if (index === cpu.gpr[13] && $scope.displayR16) {
+            return 'R9';
+        } else if (index === cpu.gpr[14] && $scope.displayR16) {
+            return 'R10';
+        } else if (index === cpu.gpr[15] && $scope.displayR16) {
+            return 'R11';
+        } else if (index === cpu.gpr[16] && $scope.displayR16) {
+            return 'R12';
+        } else if (index === cpu.gpr[17] && $scope.displayR16) {
+            return 'R13';
+        } else if (index === cpu.gpr[18] && $scope.displayR16) {
+            return 'R14';
+        } else if (index === cpu.gpr[19] && $scope.displayR16) {
+            return 'R15';
+        } else if (index === cpu.gpr[20] && $scope.displayR16) {
+            return 'R16';
+        } else {
+            return '';
+        }
+    };
+
+    $scope.ttle = function (index) {
+        if (index === cpu.gpr[0] && $scope.displayA) {
+            return 'A';
+        } else if (index === cpu.gpr[1] && $scope.displayB) {
+            return 'B';
+        } else if (index === cpu.gpr[2] && $scope.displayC) {
+            return 'C';
+        } else if (index === cpu.gpr[3] && $scope.displayD) {
+            return 'D';
+        } else if (index === cpu.gpr[5] && $scope.displayR16) {
+            return 'R1';
+        } else if (index === cpu.gpr[6] && $scope.displayR16) {
+            return 'R2';
+        } else if (index === cpu.gpr[7] && $scope.displayR16) {
+            return 'R3';
+        } else if (index === cpu.gpr[8] && $scope.displayR16) {
+            return 'R4';
+        } else if (index === cpu.gpr[9] && $scope.displayR16) {
+            return 'R5';
+        } else if (index === cpu.gpr[10] && $scope.displayR16) {
+            return 'R6';
+        } else if (index === cpu.gpr[11] && $scope.displayR16) {
+            return 'R7';
+        } else if (index === cpu.gpr[12] && $scope.displayR16) {
+            return 'R8';
+        } else if (index === cpu.gpr[13] && $scope.displayR16) {
+            return 'R9';
+        } else if (index === cpu.gpr[14] && $scope.displayR16) {
+            return 'R10';
+        } else if (index === cpu.gpr[15] && $scope.displayR16) {
+            return 'R11';
+        } else if (index === cpu.gpr[16] && $scope.displayR16) {
+            return 'R12';
+        } else if (index === cpu.gpr[17] && $scope.displayR16) {
+            return 'R13';
+        } else if (index === cpu.gpr[18] && $scope.displayR16) {
+            return 'R14';
+        } else if (index === cpu.gpr[19] && $scope.displayR16) {
+            return 'R15';
+        } else if (index === cpu.gpr[20] && $scope.displayR16) {
+            return 'R16';
+        } else {
+            return '';
+        }
+    };
+
     $scope.getMemoryInnerCellCssd = function (index) {
+        //ttle();
         //debugger;
         index = "d" + index;
     //    $scope.inputerf();
@@ -1861,6 +1971,7 @@ var app = angular.module('ASMSimulator', []);
     };
 
     $scope.getMemoryInnerCellCss = function (index) {
+        //ttle();
         //debugger;
     //    $scope.inputerf();
         if (index === cpu.ip) {
