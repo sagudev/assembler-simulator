@@ -1483,6 +1483,7 @@ var app = angular.module('ASMSimulator', []);
     };
 
     memory.reset(1);
+    memory.reset(0);
     return memory;
 }]);
 ;app.service('opcodes', [function() {
@@ -1688,6 +1689,7 @@ var app = angular.module('ASMSimulator', []);
         try {
             $scope.reset();
 
+            $scope.code=angular.element($('#sourceCode')).val();
             var assembly = assembler.go($scope.code);
             $scope.mapping = assembly.mapping;
             var binary = assembly.code;
@@ -1749,6 +1751,41 @@ var app = angular.module('ASMSimulator', []);
         
     };
 
+    $scope.download = function (type) {
+        var text = JSON.stringify(memory.disk);
+        var name = "disk.txt";
+        var a = document.getElementById("a");
+        var file = new Blob([text], {type: type});
+        a.href = URL.createObjectURL(file);
+        a.download = name;
+        document.getElementById('a').click();
+    }
+
+    $scope.loaddisk = function () {
+        document.getElementById('loaddisk').click();
+    }
+
+    $scope.loaddiski = function () {
+        //file uploaded
+        var files = document.getElementById('loaddisk').files;
+        //console.log(files);
+        if (files.length <= 0) {
+            return false;
+        }
+        
+        var fr = new FileReader();
+        
+        fr.onload = function(e) { 
+        //console.log(e);
+        $scope.memory.reset(1);
+        var disk = JSON.parse(e.target.result);// približn
+        for (var i = 0, l = disk.length; i < l; i++) {
+            $scope.memory.disk[i] = disk[i];
+        }
+    }
+  
+  fr.readAsText(files.item(0));
+    }
 
     $scope.inputerf = function () {
         // $scope.inputer1
