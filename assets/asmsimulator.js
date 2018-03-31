@@ -1577,6 +1577,7 @@ var app = angular.module('ASMSimulator', []);
     $scope.displayB = true;
     $scope.displayC = true;
     $scope.displayD = true;
+    $scope.displayR16 = true;
     $scope.inputer1 =  0;
     $scope.inputer2 =  0;
     $scope.inputer3 =  0;
@@ -1821,6 +1822,38 @@ var app = angular.module('ASMSimulator', []);
             return 'marker marker-c';
         } else if (index === cpu.gpr[3] && $scope.displayD) {
             return 'marker marker-d';
+        } else if (index === cpu.gpr[5] && $scope.displayR16) {
+            return 'marker marker-R1';
+        } else if (index === cpu.gpr[6] && $scope.displayR16) {
+            return 'marker marker-R2';
+        } else if (index === cpu.gpr[7] && $scope.displayR16) {
+            return 'marker marker-R3';
+        } else if (index === cpu.gpr[8] && $scope.displayR16) {
+            return 'marker marker-R4';
+        } else if (index === cpu.gpr[9] && $scope.displayR16) {
+            return 'marker marker-R5';
+        } else if (index === cpu.gpr[10] && $scope.displayR16) {
+            return 'marker marker-R6';
+        } else if (index === cpu.gpr[11] && $scope.displayR16) {
+            return 'marker marker-R7';
+        } else if (index === cpu.gpr[12] && $scope.displayR16) {
+            return 'marker marker-R8';
+        } else if (index === cpu.gpr[13] && $scope.displayR16) {
+            return 'marker marker-R9';
+        } else if (index === cpu.gpr[14] && $scope.displayR16) {
+            return 'marker marker-R10';
+        } else if (index === cpu.gpr[15] && $scope.displayR16) {
+            return 'marker marker-R11';
+        } else if (index === cpu.gpr[16] && $scope.displayR16) {
+            return 'marker marker-R12';
+        } else if (index === cpu.gpr[17] && $scope.displayR16) {
+            return 'marker marker-R13';
+        } else if (index === cpu.gpr[18] && $scope.displayR16) {
+            return 'marker marker-R14';
+        } else if (index === cpu.gpr[19] && $scope.displayR16) {
+            return 'marker marker-R15';
+        } else if (index === cpu.gpr[20] && $scope.displayR16) {
+            return 'marker marker-R16';
         } else {
             return '';
         }
@@ -1842,6 +1875,38 @@ var app = angular.module('ASMSimulator', []);
             return 'marker marker-c';
         } else if (index === cpu.gpr[3] && $scope.displayD) {
             return 'marker marker-d';
+        } else if (index === cpu.gpr[5] && $scope.displayR16) {
+            return 'marker marker-R1';
+        } else if (index === cpu.gpr[6] && $scope.displayR16) {
+            return 'marker marker-R2';
+        } else if (index === cpu.gpr[7] && $scope.displayR16) {
+            return 'marker marker-R3';
+        } else if (index === cpu.gpr[8] && $scope.displayR16) {
+            return 'marker marker-R4';
+        } else if (index === cpu.gpr[9] && $scope.displayR16) {
+            return 'marker marker-R5';
+        } else if (index === cpu.gpr[10] && $scope.displayR16) {
+            return 'marker marker-R6';
+        } else if (index === cpu.gpr[11] && $scope.displayR16) {
+            return 'marker marker-R7';
+        } else if (index === cpu.gpr[12] && $scope.displayR16) {
+            return 'marker marker-R8';
+        } else if (index === cpu.gpr[13] && $scope.displayR16) {
+            return 'marker marker-R9';
+        } else if (index === cpu.gpr[14] && $scope.displayR16) {
+            return 'marker marker-R10';
+        } else if (index === cpu.gpr[15] && $scope.displayR16) {
+            return 'marker marker-R11';
+        } else if (index === cpu.gpr[16] && $scope.displayR16) {
+            return 'marker marker-R12';
+        } else if (index === cpu.gpr[17] && $scope.displayR16) {
+            return 'marker marker-R13';
+        } else if (index === cpu.gpr[18] && $scope.displayR16) {
+            return 'marker marker-R14';
+        } else if (index === cpu.gpr[19] && $scope.displayR16) {
+            return 'marker marker-R15';
+        } else if (index === cpu.gpr[20] && $scope.displayR16) {
+            return 'marker marker-R16';
         } else {
             return '';
         }

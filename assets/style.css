@@ -82,6 +82,71 @@
 	background-color: #E81F1F;
 }
 
+.marker-R16 {
+	background-color: #003300;
+}
+
+.marker-R1 {
+	background-color: #003399;
+}
+
+.marker-R2 {
+	background-color: #0000FF;
+}
+
+.marker-R3 {
+	background-color: #00FF00;
+}
+
+.marker-R4 {
+	background-color: #660000;
+}
+
+.marker-R5 {
+	background-color: #660066;
+}
+
+.marker-R6 {
+	background-color: #6600FF;
+}
+
+.marker-R7 {
+	background-color: #6699FF;
+}
+
+.marker-R8 {
+	background-color: #CC3300;
+}
+
+.marker-R9 {
+	background-color: #FF33CC;
+}
+
+.marker-R10 {
+	background-color: rgb(78, 78, 45);
+}
+
+.marker-R11 {
+	background-color: #FF9999;
+}
+
+.marker-R12 {
+	background-color: #99b433;
+}
+
+.marker-R13 {
+	background-color: #8b6521;
+}
+
+.marker-R14 {
+	background-color: #8c8ac2;
+}
+
+.marker-R15 {
+	background-color: #e0ef2d;
+}
+
+
 .codelabel-line a {
     cursor: pointer;
 }
