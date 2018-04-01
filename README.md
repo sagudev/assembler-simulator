@@ -1,12 +1,15 @@
 # Simple 8-bit Assembler Simulator
 A simulator which provides a simplified assembler syntax (based on NASM) and is simulating a x86 like cpu. Press Help inside the simulator to see an overview about the supported instructions.
 
-####<a href="http://schweigi.github.io/assembler-simulator/index.html" target="_blank">TRY IT ONLINE</a>
+####<a href="https://sagudev.github.io/assembler-simulator/" target="_blank">Latest stable</a>
+####<a href="https://rawgit.com/sagudev/assembler-simulator/master/index.html" target="_blank">Latest dev</a>
 
 ### Features
 - 8-bit CPU
 - 4 general purpose registers
-- 256 bytes of memory
+- 32 registrers
+- 512 bytes of memory
+- 2048 bytes of disk
 - Console output
 
 ### How to build
