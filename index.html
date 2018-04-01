@@ -255,14 +255,14 @@
                             </thead>
                             <tbody>
                                 <tr style="text-align:center;" class="source-code">
-                                    <td><small>{{ cpu.gpr[21] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[22] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[23] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[24] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[25] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[26] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[27] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[28] | number:displayHex }}</small></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R17'"><small>{{ cpu.gpr[21] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R18'"><small>{{ cpu.gpr[22] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R19'"><small>{{ cpu.gpr[23] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R20'"><small>{{ cpu.gpr[24] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R21'"><small>{{ cpu.gpr[25] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R22'"><small>{{ cpu.gpr[26] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R23'"><small>{{ cpu.gpr[27] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R24'"><small>{{ cpu.gpr[28] | number:displayHex }}</small></div></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -281,14 +281,14 @@
                             </thead>
                             <tbody>
                                 <tr style="text-align:center;" class="source-code">
-                                    <td><small>{{ cpu.gpr[29] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[30] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[31] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[32] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[33] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[34] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[35] | number:displayHex }}</small></td>
-                                    <td><small>{{ cpu.gpr[36] | number:displayHex }}</small></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R25'"><small>{{ cpu.gpr[29] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R26'"><small>{{ cpu.gpr[30] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R27'"><small>{{ cpu.gpr[31] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R28'"><small>{{ cpu.gpr[32] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R29'"><small>{{ cpu.gpr[33] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R30'"><small>{{ cpu.gpr[34] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R31'"><small>{{ cpu.gpr[35] | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" ng-class="displayR32 && 'marker marker-R32'"><small>{{ cpu.gpr[36] | number:displayHex }}</small></div></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -352,6 +352,9 @@
                                 <span style="margin-left:5px;">R1-R16:</span>
                                 <a ng-click="displayR16 = true" ng-hide="displayR16">Show</a>
                                 <a ng-click="displayR16 = false" ng-show="displayR16">Hide</a>
+                                <span style="margin-left:5px;">R17-R32:</span>
+                                <a ng-click="displayR16 = true" ng-hide="displayR32">Show</a>
+                                <a ng-click="displayR16 = false" ng-show="displayR32">Hide</a>
                             </small>
                         </p>
                         <p class="text-muted">Disk</p>
